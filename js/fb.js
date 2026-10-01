@@ -37,9 +37,20 @@ window.FB = (() => {
   const isReady = () => ready;
   const digits = (p) => String(p || "").replace(/\D/g, "").slice(-10);
 
+  // Fail fast: Firestore request atak jaye to latkao mat (caller fallback use karega)
+  function withTimeout(promise, ms, label) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error((label || "Request") + " timed out — check internet")), ms))
+    ]);
+  }
+  const DB_TIMEOUT = 12000;
+
   /* ---------- data (site ke purane JSON shapes) ---------- */
   async function loadSite() {
-    const doc = await db.collection("site").doc("config").get();
+    const doc = await withTimeout(
+      db.collection("site").doc("config").get(), DB_TIMEOUT, "Site data");
     const s = doc.exists ? doc.data() : {};
     return {
       course: s.course || "BSc Nursing",
@@ -51,8 +62,9 @@ window.FB = (() => {
   }
 
   async function loadSem(sem) {
-    const snap = await db.collection("sems").doc(String(sem))
-      .collection("subjects").orderBy("order").get();
+    const snap = await withTimeout(
+      db.collection("sems").doc(String(sem)).collection("subjects").orderBy("order").get(),
+      DB_TIMEOUT, "Semester " + sem + " data");
     const subjects = snap.docs.map((d) => {
       const s = d.data();
       return {

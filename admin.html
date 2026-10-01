@@ -189,6 +189,20 @@
       loadDash();
     }
 
+    // Watchdog: 15s me dashboard na aaye to atakne ke bajaye wajah dikhao
+    setTimeout(() => {
+      const grid = document.getElementById("statGrid");
+      if (!grid || !grid.innerHTML.includes("Load ho raha")) return;
+      const fbOk = !!(window.FB && FB.isReady());
+      const online = navigator.onLine !== false;
+      grid.innerHTML = `<div class="statcard" style="grid-column:1/-1;text-align:left">
+        <b style="font-size:22px">⚠️ Still loading?</b>
+        <span>Firebase: ${fbOk ? "connected" : "NOT connected — check js/firebase-config.js keys"} ·
+        Internet: ${online ? "on" : "OFF — turn on internet"}</span>
+        <div style="margin-top:12px"><button class="btn btn-sm" onclick="window.location.reload()">↻ Retry</button></div>
+      </div>`;
+    }, 15000);
+
     document.querySelectorAll(".adm-tabs button").forEach((b) => {
       b.addEventListener("click", () => {
         document.querySelectorAll(".adm-tabs button").forEach((x) => x.classList.remove("on"));
@@ -203,27 +217,41 @@
     });
 
     async function loadDash() {
-      try {
-        let filled = 0, total = 0;
-        for (let s = 1; s <= 6; s++) {
+      const errors = [];
+      let filled = 0, total = 0, semsOk = 0;
+      for (let s = 1; s <= 6; s++) {
+        try {
           const d = await FB.loadSem(s);
+          semsOk++;
           for (const sub of d.subjects) {
             total += sub.topics.length;
             filled += sub.topics.filter((t) => (t.content || "").trim()).length;
           }
+        } catch (e) {
+          errors.push("Sem " + s + ": " + (e.message || e));
         }
-        const leads = await FB.listLeads(1000);
-        let users = [];
-        try { users = await FB.listUsers(1000); } catch (_) {}
-        $("statGrid").innerHTML = `
-          <div class="statcard"><b>${users.length}</b><span>Registered users</span></div>
-          <div class="statcard"><b>${leads.length}</b><span>Demo leads</span></div>
-          <div class="statcard"><b>${total}</b><span>Total topics</span></div>
-          <div class="statcard"><b>${filled}</b><span>Topics me notes</span></div>
-          <div class="statcard"><b>${total - filled}</b><span>Khali topics</span></div>`;
-      } catch (e) {
-        $("statGrid").innerHTML = `<div class="statcard"><b>!</b><span>No data — check Firestore rules + config</span></div>`;
       }
+      let leads = [];
+      try { leads = await FB.listLeads(1000); }
+      catch (e) { errors.push("Leads: " + (e.message || e)); }
+      let users = [];
+      try { users = await FB.listUsers(1000); } catch (_) {}
+      function esc(x) {
+        return String(x).replace(/[&<>"']/g, (c) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[c]));
+      }
+      $("statGrid").innerHTML = `
+        <div class="statcard"><b>${users.length}</b><span>Registered users</span></div>
+        <div class="statcard"><b>${leads.length}</b><span>Demo leads</span></div>
+        <div class="statcard"><b>${total}</b><span>Total topics</span></div>
+        <div class="statcard"><b>${filled}</b><span>Topics with notes</span></div>
+        <div class="statcard"><b>${total - filled}</b><span>Empty topics</span></div>
+        ${errors.length ? `<div class="statcard" style="grid-column:1/-1;text-align:left">
+          <b style="font-size:18px">⚠️ ${6 - semsOk} of 6 semesters failed</b>
+          <span>${errors.map((x) => esc(x)).join("<br>")}</span>
+          <div style="margin-top:12px"><button class="btn btn-sm" onclick="window.location.reload()">↻ Retry</button></div>
+        </div>` : ``}`;
     }
 
     async function loadUsers() {
@@ -240,7 +268,7 @@
           <tr><td>${u.name || "—"}</td><td>${u.email || u.phone || ""}</td>
           <td>${(u.provider || "").replace(".com", "").replace("google", "Google").replace("password", "Email")}</td>
           <td>${u.verified ? "✓" : "✗"}</td>
-          <td>${(u.at || "").slice(0, 10)}</td></tr>`).join("") || `<tr><td colspan="5">No registered users yet — the first login will appear here</td></tr>`;
+          <td>${(u.at || "").slice(0, 10)}</td></tr>`).join("") || `<tr><td colspan="5">No registered users yet — the first login will appear here</td></tr>`);
       } catch (e) {
         const msg = String((e && e.message) || e || "");
         const hint = /permission|denied|PERMISSION/i.test(msg)
