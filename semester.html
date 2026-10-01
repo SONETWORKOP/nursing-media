@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semester Notes · Nursing Media</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="ubar">
+    <div class="wrap">
+      <span>Syllabus · Notes · Revision — all free</span>
+      <span>Helpline: <a data-call-link href="tel:"><span data-owner-phone></span></a></span>
+    </div>
+  </div>
+
+  <header class="mast">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">
+          <img src="assets/logo.png" alt="Nursing Media logo" />
+        </span>
+        <span><b>Nursing Media</b><small data-course>BSc Nursing</small></span>
+      </a>
+      <nav class="nav">
+        <a class="nl" href="index.html">Home</a>
+        <a class="nl" href="index.html#semesters">Semesters</a>
+        <a class="nl" href="index.html#faq">FAQ</a>
+        <a href="index.html#demo" class="btn primary">Free Demo Class</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="pagehero" id="pageHero">
+      <nav class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; <span id="crumbSem">Semester</span></nav>
+
+      <div class="pagehead">
+        <div class="kicker" id="kickSem">Semester</div>
+        <h1 id="pageTitle">5 Subjects of the Semester</h1>
+        <p>Pick a subject and start from Topic 1. Starting in the middle leaves gaps — a friendly warning.</p>
+      </div>
+    </div>
+
+    <section class="statsband reveal">
+      <div><b>5</b><span>Subjects in this semester</span></div>
+      <div><b>100</b><span>Topics, in order</span></div>
+      <div><b>100%</b><span>Free notes</span></div>
+    </section>
+
+    <div class="subgrid" id="subGrid"></div>
+
+    <div class="notice">Doubts while studying? Fill the form and you’ll get a call — <a class="btn btn-fire btn-sm" href="index.html#demo">Free demo class</a></div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="foot-brand">
+            <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
+            <b style="font-family:var(--serif);font-size:20px">Nursing Media</b>
+          </div>
+          <p>Semester 1–6 notes in simple language.</p>
+        </div>
+        <div>
+          <h4>Semesters</h4>
+          <ul>
+            <li><a href="semester.html?sem=1">Semester 1</a></li>
+            <li><a href="semester.html?sem=2">Semester 2</a></li>
+            <li><a href="semester.html?sem=3">Semester 3</a></li>
+            <li><a href="semester.html?sem=4">Semester 4</a></li>
+            <li><a href="semester.html?sem=5">Semester 5</a></li>
+            <li><a href="semester.html?sem=6">Semester 6</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#demo">Free demo class</a></li>
+            <li><a href="index.html#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <p><b data-owner-name></b><br />Site Owner<br /><a data-call-link href="tel:" style="font-weight:700"><span data-owner-phone></span></a></p>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Nursing Media · Photos: Pexels</span>
+        <span>Please match with your college syllabus before exams.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script>
+    // gstatic block ho to jsdelivr mirror se Firebase SDK lo
+    if (typeof firebase === "undefined") {
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-storage-compat.js"><\/script>'
+      );
+    }
+  </script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/fb.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/premium.js"></script>
+  <script>
+    (async () => {
+      const MOTIF_PHOTOS = [
+        "https://images.pexels.com/photos/32254525/pexels-photo-32254525.jpeg?auto=compress&cs=tinysrgb&w=600",
+        "https://images.pexels.com/photos/19438560/pexels-photo-19438560.jpeg?auto=compress&cs=tinysrgb&w=600",
+        "https://images.pexels.com/photos/32115898/pexels-photo-32115898.jpeg?auto=compress&cs=tinysrgb&w=600",
+        "https://images.pexels.com/photos/32254523/pexels-photo-32254523.jpeg?auto=compress&cs=tinysrgb&w=600",
+        "https://images.pexels.com/photos/27298085/pexels-photo-27298085.jpeg?auto=compress&cs=tinysrgb&w=600"
+      ];
+      const sem = getParam("sem") || "1";
+      const SEM_BG = {
+        1: "https://images.pexels.com/photos/32254525/pexels-photo-32254525.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        2: "https://images.pexels.com/photos/19438560/pexels-photo-19438560.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        3: "https://images.pexels.com/photos/32115898/pexels-photo-32115898.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        4: "https://images.pexels.com/photos/32254523/pexels-photo-32254523.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        5: "https://images.pexels.com/photos/27298085/pexels-photo-27298085.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        6: "https://images.pexels.com/photos/31499386/pexels-photo-31499386.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      };
+      document.getElementById("pageHero").style.setProperty("--ph", `url("${SEM_BG[sem]}")`);
+      document.getElementById("crumbSem").textContent = "Semester " + sem;
+      document.getElementById("kickSem").textContent = "Semester " + sem;
+      document.getElementById("pageTitle").textContent = "5 Subjects — Semester " + sem;
+      document.title = "Semester " + sem + " Notes · Nursing Media";
+      try {
+        const d = await loadJSON(`data/sem${sem}.json`);
+        document.getElementById("subGrid").innerHTML = d.subjects.map((s, i) => `
+          <a class="subcard" href="subject.html?sem=${sem}&sub=${esc(s.id)}">
+            <img class="cover" src="${MOTIF_PHOTOS[i % 5]}" alt="${esc(s.name)}" loading="lazy" onerror="this.onerror=null;this.src='assets/m${(i % 5) + 1}.svg';" />
+            <div class="sidx">Subject ${String(i + 1).padStart(2, "0")}</div>
+            <h3>${esc(s.name)}</h3>
+            <p>${s.topics.length} topics · Sem ${sem}</p>
+            <span class="more">View topics <svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>`).join("");
+      } catch (e) {
+        document.getElementById("subGrid").innerHTML =
+          `<div class="paper"><div class="empty">Semester ${esc(sem)} data not found.</div></div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

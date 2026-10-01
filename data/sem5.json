@@ -1,0 +1,741 @@
+{
+  "sem": 5,
+  "title": "Semester 5",
+  "subjects": [
+    {
+      "id": "obg-2",
+      "name": "Obstetrical Nursing - II",
+      "icon": "🤰",
+      "topics": [
+        {
+          "id": 1,
+          "title": "Topic 1",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 2,
+          "title": "Topic 2",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 3,
+          "title": "Topic 3",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 4,
+          "title": "Topic 4",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 5,
+          "title": "Topic 5",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 6,
+          "title": "Topic 6",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 7,
+          "title": "Topic 7",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 8,
+          "title": "Topic 8",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 9,
+          "title": "Topic 9",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 10,
+          "title": "Topic 10",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 11,
+          "title": "Topic 11",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 12,
+          "title": "Topic 12",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 13,
+          "title": "Topic 13",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 14,
+          "title": "Topic 14",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 15,
+          "title": "Topic 15",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 16,
+          "title": "Topic 16",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 17,
+          "title": "Topic 17",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 18,
+          "title": "Topic 18",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 19,
+          "title": "Topic 19",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 20,
+          "title": "Topic 20",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        }
+      ]
+    },
+    {
+      "id": "community-health-2",
+      "name": "Community Health Nursing - II",
+      "icon": "🏡",
+      "topics": [
+        {
+          "id": 1,
+          "title": "Topic 1",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 2,
+          "title": "Topic 2",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 3,
+          "title": "Topic 3",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 4,
+          "title": "Topic 4",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 5,
+          "title": "Topic 5",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 6,
+          "title": "Topic 6",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 7,
+          "title": "Topic 7",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 8,
+          "title": "Topic 8",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 9,
+          "title": "Topic 9",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 10,
+          "title": "Topic 10",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 11,
+          "title": "Topic 11",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 12,
+          "title": "Topic 12",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 13,
+          "title": "Topic 13",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 14,
+          "title": "Topic 14",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 15,
+          "title": "Topic 15",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 16,
+          "title": "Topic 16",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 17,
+          "title": "Topic 17",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 18,
+          "title": "Topic 18",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 19,
+          "title": "Topic 19",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 20,
+          "title": "Topic 20",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        }
+      ]
+    },
+    {
+      "id": "research-stats",
+      "name": "Nursing Research & Statistics",
+      "icon": "📊",
+      "topics": [
+        {
+          "id": 1,
+          "title": "Topic 1",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 2,
+          "title": "Topic 2",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 3,
+          "title": "Topic 3",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 4,
+          "title": "Topic 4",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 5,
+          "title": "Topic 5",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 6,
+          "title": "Topic 6",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 7,
+          "title": "Topic 7",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 8,
+          "title": "Topic 8",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 9,
+          "title": "Topic 9",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 10,
+          "title": "Topic 10",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 11,
+          "title": "Topic 11",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 12,
+          "title": "Topic 12",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 13,
+          "title": "Topic 13",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 14,
+          "title": "Topic 14",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 15,
+          "title": "Topic 15",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 16,
+          "title": "Topic 16",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 17,
+          "title": "Topic 17",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 18,
+          "title": "Topic 18",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 19,
+          "title": "Topic 19",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 20,
+          "title": "Topic 20",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        }
+      ]
+    },
+    {
+      "id": "management",
+      "name": "Management of Nursing Services",
+      "icon": "📋",
+      "topics": [
+        {
+          "id": 1,
+          "title": "Topic 1",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 2,
+          "title": "Topic 2",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 3,
+          "title": "Topic 3",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 4,
+          "title": "Topic 4",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 5,
+          "title": "Topic 5",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 6,
+          "title": "Topic 6",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 7,
+          "title": "Topic 7",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 8,
+          "title": "Topic 8",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 9,
+          "title": "Topic 9",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 10,
+          "title": "Topic 10",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 11,
+          "title": "Topic 11",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 12,
+          "title": "Topic 12",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 13,
+          "title": "Topic 13",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 14,
+          "title": "Topic 14",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 15,
+          "title": "Topic 15",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 16,
+          "title": "Topic 16",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 17,
+          "title": "Topic 17",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 18,
+          "title": "Topic 18",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 19,
+          "title": "Topic 19",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 20,
+          "title": "Topic 20",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        }
+      ]
+    },
+    {
+      "id": "palliative-care",
+      "name": "Palliative Care Nursing",
+      "icon": "🤍",
+      "topics": [
+        {
+          "id": 1,
+          "title": "Topic 1",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 2,
+          "title": "Topic 2",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 3,
+          "title": "Topic 3",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 4,
+          "title": "Topic 4",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 5,
+          "title": "Topic 5",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 6,
+          "title": "Topic 6",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 7,
+          "title": "Topic 7",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 8,
+          "title": "Topic 8",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 9,
+          "title": "Topic 9",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 10,
+          "title": "Topic 10",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 11,
+          "title": "Topic 11",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 12,
+          "title": "Topic 12",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 13,
+          "title": "Topic 13",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 14,
+          "title": "Topic 14",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 15,
+          "title": "Topic 15",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 16,
+          "title": "Topic 16",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 17,
+          "title": "Topic 17",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 18,
+          "title": "Topic 18",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 19,
+          "title": "Topic 19",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        },
+        {
+          "id": 20,
+          "title": "Topic 20",
+          "content": "",
+          "pdf": "",
+          "video": ""
+        }
+      ]
+    }
+  ]
+}

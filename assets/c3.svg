@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Semester 3">
+  <rect width="400" height="300" rx="18" fill="#dbeafe"/>
+  <circle cx="330" cy="240" r="56" fill="#1d4ed8" opacity="0.1"/>
+  <text x="34" y="92" font-family="Georgia, serif" font-size="64" font-weight="bold" fill="#1d4ed8">03</text>
+  <text x="36" y="122" font-family="Georgia, serif" font-size="22" font-style="italic" fill="#6d7568">Semester Three</text>
+  <g transform="translate(215 140)">
+    <rect x="0" y="14" width="124" height="84" rx="10" fill="#fff" stroke="#1d4ed8" stroke-width="4"/>
+    <rect x="14" y="28" width="96" height="44" rx="4" fill="#1c231b"/>
+    <text x="24" y="56" font-family="monospace" font-size="17" font-weight="bold" fill="#bfdbfe">&gt;_ notes</text>
+    <rect x="48" y="98" width="28" height="8" fill="#1d4ed8"/>
+    <rect x="20" y="106" width="84" height="8" rx="4" fill="#1d4ed8"/>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" role="img" aria-label="Flask">
+  <rect width="200" height="150" rx="12" fill="#fff1e2"/>
+  <g transform="translate(70 18)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 6 h24 l9 40 a26 23 0 0 1 -42 0 Z" fill="#fff" stroke="#1d4ed8" stroke-width="3.5"/>
+    <path d="M13 44 q10 -8 20 0 q10 8 21 0 l3 10 a26 23 0 0 1 -47 0 Z" fill="#fdba74" stroke="#f97316" stroke-width="2.5"/>
+    <circle cx="74" cy="26" r="6" fill="none" stroke="#f97316" stroke-width="2.5"/>
+    <circle cx="84" cy="48" r="4" fill="none" stroke="#f97316" stroke-width="2.5"/>
+  </g>
+</svg>

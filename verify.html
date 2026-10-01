@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Email · Nursing Media</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .auth-wrap { max-width: 480px; margin: 48px auto 70px; }
+    .auth-card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); padding: 38px 34px; text-align: center; }
+    .auth-card .mark { width: 64px; height: 64px; border-radius: 18px; background: #fff; padding: 6px; margin: 0 auto 16px; box-shadow: var(--shadow); }
+    .auth-card .mark img { width: 100%; height: 100%; object-fit: contain; }
+    .auth-card h1 { font-size: 24px; margin-bottom: 8px; }
+    .auth-card p { color: var(--muted); font-size: 14.5px; line-height: 1.7; }
+    .status-big { font-size: 52px; margin-bottom: 6px; }
+    .spin { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--brand); animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="ubar">
+    <div class="wrap">
+      <span>BSc Nursing · Notes + Free Demo — all free</span>
+      <span>Helpline: <a data-call-link href="tel:"><span data-owner-phone></span></a></span>
+    </div>
+  </div>
+
+  <header class="mast">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
+        <span><b>Nursing Media</b><small data-course>BSc Nursing</small></span>
+      </a>
+      <nav class="nav">
+        <a class="nl" href="index.html">Home</a>
+        <a class="nl" href="index.html#explorer">Notes</a>
+        <a class="btn primary" href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="mark"><img src="assets/logo.png" alt="Nursing Media logo" /></div>
+        <div id="boxLoading">
+          <div class="spin"></div>
+          <h1>Verifying…</h1>
+          <p>Please wait a second.</p>
+        </div>
+        <div id="boxDone" hidden>
+          <div class="status-big">✅</div>
+          <h1 id="doneTitle">Email verified!</h1>
+          <p id="doneText">Your email is confirmed. You can now log in and start reading notes.</p>
+          <a class="btn btn-fire big" id="doneBtn" href="login.html" style="margin-top:18px">Go to Login →</a>
+        </div>
+        <div id="boxPass" hidden>
+          <div class="status-big">🔑</div>
+          <h1>Set a new password</h1>
+          <p>Enter a new password for your account below.</p>
+          <form id="passForm" novalidate style="margin-top:16px;text-align:left">
+            <div class="form-group">
+              <label for="newPass">New password (6+ characters)</label>
+              <input id="newPass" type="password" placeholder="••••••" autocomplete="new-password" />
+            </div>
+            <div class="form-err" id="passErr"></div>
+            <button class="btn btn-fire big" type="submit">Save new password ✓</button>
+          </form>
+        </div>
+        <div id="boxFail" hidden>
+          <div class="status-big">⚠️</div>
+          <h1>Link expired or invalid</h1>
+          <p id="failText">This link has already been used or has expired. Go back to the login page and request a fresh link.</p>
+          <a class="btn big" href="login.html" style="margin-top:18px">Back to Login</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-bottom" style="border:none;margin-top:0">
+        <span>© 2026 Nursing Media · Photos: Pexels</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script>
+    if (typeof firebase === "undefined") {
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"><\/script>'
+      );
+    }
+  </script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/fb.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function show(id) {
+      ["boxLoading", "boxDone", "boxPass", "boxFail"].forEach((b) => {
+        document.getElementById(b).hidden = (b !== id);
+      });
+    }
+    document.addEventListener("DOMContentLoaded", async () => {
+      // fb.js init runs first (script order), so FB is ready here
+      if (!window.FB || !FB.isReady()) {
+        document.getElementById("failText").textContent =
+          "Site setup is incomplete. Please try again later.";
+        return show("boxFail");
+      }
+      const q = new URLSearchParams(window.location.search);
+      const mode = q.get("mode"), code = q.get("oobCode");
+      const auth = firebase.auth();
+      try {
+        if (mode === "verifyEmail" && code) {
+          await auth.applyActionCode(code);
+          document.getElementById("doneTitle").textContent = "Email verified!";
+          document.getElementById("doneText").textContent =
+            "Your email is confirmed. Log in and start reading notes.";
+          const cont = q.get("continueUrl");
+          if (cont) document.getElementById("doneBtn").href = cont;
+          return show("boxDone");
+        }
+        if (mode === "resetPassword" && code) {
+          show("boxPass");
+          document.getElementById("passForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const err = document.getElementById("passErr");
+            const pw = document.getElementById("newPass").value;
+            err.textContent = "";
+            if (pw.length < 6) { err.textContent = "Password needs 6+ characters."; return; }
+            try {
+              await auth.confirmPasswordReset(code, pw);
+              document.getElementById("doneTitle").textContent = "Password updated!";
+              document.getElementById("doneText").textContent =
+                "Your new password is saved. Log in with it now.";
+              show("boxDone");
+            } catch (e2) {
+              document.getElementById("failText").textContent =
+                "This link has already been used or has expired. Request a fresh one from the login page.";
+              show("boxFail");
+            }
+          });
+          return;
+        }
+        document.getElementById("failText").textContent =
+          "This page only works when opened from an email link.";
+        show("boxFail");
+      } catch (e) {
+        document.getElementById("failText").textContent =
+          "This link has already been used or has expired. Request a fresh one from the login page.";
+        show("boxFail");
+      }
+    });
+  </script>
+</body>
+</html>

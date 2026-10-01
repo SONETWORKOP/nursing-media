@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login · Nursing Media</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .auth-wrap { max-width: 480px; margin: 44px auto 64px; }
+    .auth-card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); padding: 38px 34px; position: relative; overflow: hidden; }
+    .auth-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--brand), var(--amber)); }
+    .auth-card .brandrow { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .auth-card .brand-mark { width: 52px; height: 52px; }
+    .auth-card h1 { font-size: 27px; }
+    .auth-card > p { color: var(--muted); font-size: 14px; margin: 6px 0 18px; }
+    .auth-perks { display: grid; gap: 8px; margin: 0 0 22px; }
+    .auth-perks div { display: flex; gap: 10px; align-items: center; font-size: 13.5px; color: var(--ink-soft); }
+    .auth-perks .tick { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-size: 12px; font-weight: 800; background: var(--brand-tint); color: var(--brand); }
+    .authtabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--paper-2); border-radius: 12px; padding: 6px; margin-bottom: 22px; }
+    .authtabs button { font-family: inherit; font-size: 14.5px; font-weight: 700; border: none; background: none; color: var(--muted); padding: 11px; border-radius: 9px; cursor: pointer; transition: all 0.18s ease; }
+    .authtabs button.on { background: var(--card); color: var(--ink); box-shadow: var(--shadow); }
+    #googleBtn { transition: transform 0.16s ease, box-shadow 0.16s ease; }
+    #googleBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(25, 12, 60, 0.14); }
+    .spam-note { display: flex; gap: 10px; align-items: flex-start; background: var(--amber-tint); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; font-size: 13px; color: var(--ink-soft); margin-top: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <div class="ubar">
+    <div class="wrap">
+      <span>BSc Nursing · Notes + Free Demo — all free</span>
+      <span>Helpline: <a data-call-link href="tel:"><span data-owner-phone></span></a></span>
+    </div>
+  </div>
+
+  <header class="mast">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
+        <span><b>Nursing Media</b><small data-course>BSc Nursing</small></span>
+      </a>
+      <nav class="nav">
+        <a class="nl" href="index.html">Home</a>
+        <a class="nl" href="index.html#explorer">Notes</a>
+        <a class="nl" href="index.html#faq">FAQ</a>
+        <a href="index.html#demo" class="btn primary">Free Demo Class</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="brandrow">
+          <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
+          <h1 id="authTitle">Welcome back!</h1>
+        </div>
+        <p>One-click login — no OTP/password hassle. <b>100% free.</b></p>
+        <div class="auth-perks">
+          <div><span class="tick">✓</span> Save bookmarks & track your reading</div>
+          <div><span class="tick">✓</span> Get free demo class callbacks</div>
+          <div><span class="tick">✓</span> Works on phone, no app needed</div>
+        </div>
+        <!-- Google + Email login (Firebase — free, bina card) -->
+        <div id="fbBox" hidden>
+          <button class="btn big" type="button" id="googleBtn" style="background:#fff;border:1.5px solid var(--line)">
+            <svg class="ic" viewBox="0 0 24 24" style="width:20px;height:20px"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.5-.2-2.3H12v4.5h6c-.3 1.4-1.1 2.5-2.4 3.3v2.8h3.9c2.3-2.1 3.1-5.4 3.1-8.3z"/><path fill="#34A853" d="M12 23c3.2 0 5.9-1.1 7.9-2.9l-3.9-2.8c-1.1.7-2.5 1.1-4 1.1-3.1 0-5.7-2.1-6.6-4.9H1.4v2.9C3.4 20.5 7.4 23 12 23z"/><path fill="#FBBC05" d="M5.4 13.5c-.2-.7-.4-1.5-.4-2.5s.2-1.8.4-2.5V5.6H1.4C.5 7.3 0 9.1 0 11s.5 3.7 1.4 5.4l4-2.9z"/><path fill="#EA4335" d="M12 5.6c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 2.1 15.2 1 12 1 7.4 1 3.4 3.5 1.4 7.6l4 2.9c.9-2.8 3.5-4.9 6.6-4.9z"/></svg>
+            Login with Google
+          </button>
+          <p style="text-align:center;color:var(--muted);font-size:13px;margin:16px 0 12px">— or with email —</p>
+          <div class="authtabs">
+            <button id="tabLogin" class="on" type="button">Login</button>
+            <button id="tabRegister" type="button">Register</button>
+          </div>
+          <form id="emailForm" novalidate>
+            <div class="form-group">
+              <label for="emEmail">Email</label>
+              <input id="emEmail" type="email" placeholder="you@email.com" autocomplete="email" />
+            </div>
+            <div class="form-group">
+              <label for="emPass">Password (6+ characters)</label>
+              <input id="emPass" type="password" placeholder="••••••" autocomplete="current-password" />
+            </div>
+            <div class="form-err" id="emErr"></div>
+            <button class="btn btn-fire big" type="submit" id="emBtn">Login →</button>
+            <p style="text-align:center;margin-top:12px;font-size:13.5px"><a href="#" id="forgotLink">Forgot password?</a></p>
+            <div class="spam-note">📬 <span>Reset link not arriving? Look in your <b>spam folder</b> and mark it <b>“Not spam”</b>.</span></div>
+          </form>
+        </div>
+        <div id="noFbBox" hidden>
+          <div class="notice">Firebase config is missing — paste the keys in <b>js/firebase-config.js</b> (see tutorial).</div>
+        </div>
+        <div id="verifyBox" hidden>
+          <div class="notice" style="border-left-color:var(--amber)">📧 Verification link sent to <b id="verifyEmail"></b> — open your inbox (check the <b>spam folder</b> too) and click the link, then continue.</div>
+          <div class="form-err" id="verifyErr"></div>
+          <button class="btn btn-fire big" type="button" id="verifyContinue" style="margin-top:12px">I’ve Verified — Continue →</button>
+          <div class="spam-note">📬 <span><b>Don’t see the email?</b> Check your <b>spam / promotions</b> folder, then mark it <b>“Not spam”</b> so future emails land in your inbox.</span></div>
+          <p class="form-note"><a href="#" id="resendLink">Resend verification email</a> · <a href="#" id="verifyLogout">Use a different account</a></p>
+        </div>
+        <p class="form-note" id="loginNote"></p>
+        <p class="form-note">Logging in with the owner number opens the Admin Panel.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-bottom" style="border:none;margin-top:0">
+        <span>© 2026 Nursing Media · Photos: Pexels</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script>
+    // gstatic block ho to jsdelivr mirror se Firebase SDK lo
+    if (typeof firebase === "undefined") {
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-storage-compat.js"><\/script>'
+      );
+    }
+  </script>
+  <script src="js/firebase-config.js?v=2"></script>
+  <script src="js/fb.js?v=2"></script>
+  <script src="js/app.js"></script>
+  <script src="js/premium.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const goAfterLogin = (isAdmin) => {
+      if (isAdmin) { window.location.href = "admin.html"; return; }
+      const next = new URLSearchParams(window.location.search).get("next");
+      if (next && !/^(https?:)?\/\//i.test(next) && !next.includes("..")) {
+        window.location.href = next;
+        return;
+      }
+      window.location.href = "index.html";
+    };
+
+    if (window.FB && FB.isReady()) {
+      $("fbBox").hidden = false;
+
+      function showVerify(email) {
+        $("fbBox").hidden = true;
+        $("verifyBox").hidden = false;
+        $("verifyEmail").textContent = email || "";
+        $("verifyErr").textContent = "";
+      }
+
+      // Entry gate: email/password users must verify first (Google users auto-pass)
+      async function enterIfAllowed(u) {
+        if (!u) return;
+        try { await FB.saveUserProfile(); } catch (_) {}
+        const fresh = await FB.refreshUser();
+        const me = fresh || u;
+        if (FB.isAdmin(me)) return goAfterLogin(true);
+        const isEmailUser = ((me.providerData || [])[0] || {}).providerId === "password";
+        if (isEmailUser && !me.emailVerified) return showVerify(me.email);
+        return goAfterLogin(false);
+      }
+
+      FB.onUser((u) => { if (u) enterIfAllowed(u); });
+
+      $("googleBtn").addEventListener("click", async () => {
+        const err = $("emErr");
+        err.textContent = "";
+        try {
+          const u = await FB.googleLogin();
+          await enterIfAllowed(u);
+        } catch (e) {
+          const code = (e && e.code) || "";
+          if (code === "auth/popup-blocked" || code === "auth/cancelled-popup-request") {
+            err.textContent = "Popup blocked! Tap the popup icon in the address bar, choose ‘Always allow’, then retry.";
+          } else if (code === "auth/popup-closed-by-user") {
+            err.textContent = "The Google window closed — retry and complete login in the window.";
+          } else if (code === "auth/unauthorized-domain") {
+            err.textContent = "Domain not allowed! In Firebase → Authentication → Settings → Authorized domains, add ‘127.0.0.1’.";
+          } else if (code === "auth/network-request-failed") {
+            err.textContent = "Network issue — turn on the internet and retry.";
+          } else if (code === "auth/operation-not-supported-in-this-environment") {
+            err.textContent = "Open in Chrome (http://127.0.0.1:8099) — login won’t work from an opened file.";
+          } else {
+            err.textContent = "Google login failed (" + (code || "unknown") + ") — allow popups.";
+          }
+        }
+      });
+
+      let mode = "login";
+      const tabLogin = $("tabLogin"), tabRegister = $("tabRegister");
+      function setMode(m) {
+        mode = m;
+        tabLogin.classList.toggle("on", m === "login");
+        tabRegister.classList.toggle("on", m === "register");
+        $("emBtn").textContent = m === "login" ? "Login →" : "Create account →";
+        $("authTitle").textContent = m === "login" ? "Welcome back!" : "Create free account";
+        $("emErr").textContent = "";
+      }
+      tabLogin.addEventListener("click", () => setMode("login"));
+      tabRegister.addEventListener("click", () => setMode("register"));
+      $("forgotLink").addEventListener("click", async (e) => {
+        e.preventDefault();
+        const err = $("emErr");
+        const email = $("emEmail").value.trim();
+        if (!/.+@.+\..+/.test(email)) { err.textContent = "Enter your email above first, then click Forgot password."; return; }
+        err.textContent = "";
+        try {
+          await FB.resetPassword(email);
+          err.style.color = "#16a34a";
+          err.textContent = "Reset link sent! Check your inbox (and spam folder).";
+          setTimeout(() => { err.style.color = ""; }, 5000);
+        } catch (e2) {
+          err.textContent = e2.code === "auth/user-not-found"
+            ? "No account found with this email — press Register."
+            : "Could not send reset email. Try again.";
+        }
+      });
+
+      // Verify helpers: resend link, continue after clicking, switch account
+      $("resendLink").addEventListener("click", async (e) => {
+        e.preventDefault();
+        const err = $("verifyErr");
+        err.textContent = "";
+        try {
+          await FB.sendVerification();
+          err.style.color = "#16a34a";
+          err.textContent = "Verification email re-sent! Check your inbox and spam folder.";
+          setTimeout(() => { err.style.color = ""; }, 4000);
+        } catch (e2) {
+          err.textContent = "Could not resend. Try again in a minute.";
+        }
+      });
+      $("verifyContinue").addEventListener("click", async () => {
+        const err = $("verifyErr");
+        err.textContent = "";
+        const u = await FB.refreshUser();
+        if (!u) { window.location.reload(); return; }
+        if (FB.isAdmin(u)) return goAfterLogin(true);
+        const isEmailUser = ((u.providerData || [])[0] || {}).providerId === "password";
+        if (isEmailUser && !u.emailVerified) {
+          err.textContent = "Not verified yet — click the link in your email first.";
+          return;
+        }
+        try { await FB.saveUserProfile(); } catch (_) {}
+        goAfterLogin(false);
+      });
+      $("verifyLogout").addEventListener("click", async (e) => {
+        e.preventDefault();
+        try { await FB.logout(); } catch (_) {}
+        window.location.reload();
+      });
+
+      // Don't forget to turn ON the Email/Password provider in the Firebase console!
+      $("emailForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const err = $("emErr");
+        err.textContent = "";
+        const email = $("emEmail").value.trim(), pass = $("emPass").value;
+        if (!/.+@.+\..+/.test(email)) { err.textContent = "Enter a valid email"; return; }
+        if (pass.length < 6) { err.textContent = "Password needs 6+ characters"; return; }
+        try {
+          if (mode === "register") {
+            const u = await FB.emailRegister(email, pass);
+            try { await FB.sendVerification(); } catch (_) {}
+            try { await FB.saveUserProfile(); } catch (_) {}
+            return showVerify(u.email);
+          }
+          const u = await FB.emailLogin(email, pass);
+          await enterIfAllowed(u);
+        } catch (e2) {
+          err.textContent = (e2.code === "auth/email-already-in-use")
+            ? "This email is registered — press Login"
+            : (e2.code === "auth/invalid-credential" ? "Wrong email or password" : "Error: " + (e2.message || e2));
+        }
+      });
+    } else {
+      $("noFbBox").hidden = false;
+      const why = (typeof firebase === "undefined")
+        ? "Firebase SDK did not load — turn on the net and hard-reload the page."
+        : "paste the keys in js/firebase-config.js (see tutorial).";
+      $("noFbBox").querySelector(".notice").textContent = "To log in: " + why;
+    }
+  </script>
+</body>
+</html>

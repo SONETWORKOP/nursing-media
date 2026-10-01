@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Semester 4">
+  <rect width="400" height="300" rx="18" fill="#fff1e2"/>
+  <circle cx="60" cy="240" r="52" fill="#f97316" opacity="0.12"/>
+  <text x="34" y="92" font-family="Georgia, serif" font-size="64" font-weight="bold" fill="#f97316">04</text>
+  <text x="36" y="122" font-family="Georgia, serif" font-size="22" font-style="italic" fill="#6d7568">Semester Four</text>
+  <g transform="translate(225 135)" fill="none" stroke-linecap="round">
+    <circle cx="55" cy="55" r="46" fill="#fff" stroke="#1d4ed8" stroke-width="4"/>
+    <path d="M9 55 h92 M55 9 v92" stroke="#f97316" stroke-width="3"/>
+    <path d="M20 30 Q55 48 90 30 M20 80 Q55 62 90 80" stroke="#1d4ed8" stroke-width="3"/>
+    <circle cx="55" cy="55" r="8" fill="#fdba74" stroke="#f97316" stroke-width="3"/>
+  </g>
+</svg>

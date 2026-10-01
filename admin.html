@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel · Nursing Media</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .adm-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 26px 0 4px; }
+    .adm-head h1 { font-size: clamp(26px, 4vw, 36px); }
+    .adm-head .spacer { flex: 1; }
+    .adm-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 6px; }
+    .adm-tabs button { font-family: inherit; font-size: 14px; font-weight: 700; padding: 11px 20px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft); cursor: pointer; }
+    .adm-tabs button.on { background: linear-gradient(135deg, #2563eb, #1e40af); border-color: transparent; color: #fff; box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35); }
+    .adm-pane { display: none; margin-top: 20px; }
+    .adm-pane.on { display: block; }
+    .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+    .statcard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 18px; text-align: center; box-shadow: var(--shadow); }
+    .statcard b { font-size: 32px; color: var(--brand); display: block; }
+    .statcard span { font-size: 12.5px; color: var(--muted); }
+    table.users { width: 100%; border-collapse: collapse; background: var(--card); font-size: 14px; }
+    table.users th, table.users td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+    table.users th { background: var(--paper-2); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+    .tablewrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--line); }
+    .selrow { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .selrow select { padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); font-size: 14.5px; font-family: inherit; background: var(--card); color: var(--ink); }
+    .topicedit { display: grid; gap: 4px; }
+    .topicedit a { display: flex; gap: 12px; align-items: center; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; text-decoration: none; color: var(--ink); font-size: 14.5px; }
+    .topicedit a:hover { border-color: var(--brand); }
+    .topicedit .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
+    .topicedit a.done .dot { background: #16a34a; }
+    .topicedit .t { flex: 1; }
+    .topicedit small { color: var(--muted); font-size: 12px; }
+    #editorBox { margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+    #editorBox textarea { width: 100%; min-height: 220px; padding: 13px 14px; border-radius: 10px; border: 1.5px solid var(--line); font-size: 14.5px; font-family: inherit; background: var(--paper); color: var(--ink); resize: vertical; }
+    #editorBox input[type=text] { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); font-size: 15px; font-family: inherit; background: var(--paper); color: var(--ink); }
+    .savemsg { font-size: 13.5px; font-weight: 700; color: #16a34a; min-height: 20px; margin-top: 8px; }
+    .hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <div class="ubar">
+    <div class="wrap">
+      <span>Admin Panel — <b id="admName">…</b></span>
+      <span><a href="index.html">View site</a> · <a href="#" id="admLogout">Logout</a></span>
+    </div>
+  </div>
+
+  <header class="mast">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
+        <span><b>Nursing Media</b><small>Admin Panel · Firebase</small></span>
+      </a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="fbWarn" hidden>
+      <div class="notice">Firebase config missing (js/firebase-config.js). Paste the config first, then the panel works.</div>
+    </div>
+    <div class="adm-head">
+      <h1>Site Control Room</h1>
+      <span class="spacer"></span>
+      <a class="btn btn-sm" href="index.html">← Open site</a>
+    </div>
+    <p style="color:var(--muted);font-size:14.5px">Notes, leads and settings — all in the cloud, live on the site as soon as you save.</p>
+
+    <div class="adm-tabs">
+      <button class="on" data-pane="dash">Dashboard</button>
+      <button data-pane="users">Registered Users</button>
+      <button data-pane="leads">Demo Leads</button>
+      <button data-pane="notes">Notes Manager</button>
+      <button data-pane="settings">Settings</button>
+    </div>
+
+    <section class="adm-pane on" id="pane-dash">
+      <div class="statgrid" id="statGrid"><div class="statcard"><b>…</b><span>Load ho raha</span></div></div>
+    </section>
+
+    <section class="adm-pane" id="pane-users">
+      <div class="tablewrap"><table class="users">
+        <thead><tr><th>Name</th><th>Email / Phone</th><th>Via</th><th>Verified</th><th>Joined</th></tr></thead>
+        <tbody id="userRows"><tr><td colspan="5">Loading…</td></tr></tbody>
+      </table></div>
+      <p class="hint">Every student who logs in with Google/Email appears here. Total: <b id="userCount">0</b></p>
+    </section>
+
+    <section class="adm-pane" id="pane-leads">
+      <div class="tablewrap"><table class="users">
+        <thead><tr><th>Name</th><th>Mobile</th><th>Sem</th><th>Slot</th><th>Date</th></tr></thead>
+        <tbody id="leadRows"><tr><td colspan="5">Loading…</td></tr></tbody>
+      </table></div>
+      <p class="hint">Students who filled the demo form appear here — call to convert them!</p>
+    </section>
+
+    <section class="adm-pane" id="pane-notes">
+      <div class="selrow">
+        <select id="nSem"></select>
+        <select id="nSub"></select>
+      </div>
+      <div class="topicedit" id="nTopics"></div>
+      <div id="editorBox" hidden>
+        <h3 id="edTitle" style="margin-bottom:14px"></h3>
+        <div class="form-group"><label>Topic name</label><input type="text" id="edName" /></div>
+        <div class="form-group"><label>Notes content (HTML allowed)</label><textarea id="edContent" placeholder="<h3>Heading</h3><p>Notes here…"></textarea></div>
+        <div class="form-group"><label>PDF link (Google Drive public link)</label><input type="text" id="edPdf" placeholder="https://drive.google.com/file/d/…/view" /></div>
+        <p class="hint">Open the PDF in the Drive app → Share → <b>“Anyone with the link”</b> → paste the link above → Save. Done!</p>
+        <div class="form-group" style="margin-top:12px"><label>Video link (optional)</label><input type="text" id="edVideo" placeholder="https://…" /></div>
+        <button class="btn btn-fire" id="edSave">Save ✓</button>
+        <div class="savemsg" id="edMsg"></div>
+        <p class="hint">Preview: <a id="edPreview" href="#" target="_blank">open topic →</a></p>
+      </div>
+    </section>
+
+    <section class="adm-pane" id="pane-settings">
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:var(--shadow)">
+        <h3>Site Settings</h3>
+        <div class="form-group" style="margin-top:14px"><label>Course name</label><input type="text" id="setCourse" /></div>
+        <div class="form-group"><label>Tagline</label><input type="text" id="setTagline" /></div>
+        <div class="form-group"><label>Owner name</label><input type="text" id="setOwnerName" /></div>
+        <div class="form-group"><label>Owner phone</label><input type="text" id="setOwnerPhone" /></div>
+        <button class="btn btn-fire" id="setSave">Save settings ✓</button>
+        <div class="savemsg" id="setMsg"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-bottom" style="border:none;margin-top:0">
+        <span>© 2026 Nursing Media · Admin Panel</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script>
+    // gstatic block ho to jsdelivr mirror se Firebase SDK lo
+    if (typeof firebase === "undefined") {
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-storage-compat.js"><\/script>'
+      );
+    }
+  </script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/fb.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    if (!window.FB || !FB.isReady()) {
+      $("fbWarn").hidden = false;
+    }
+
+    // admin guard (sirf owner Gmail se Google login wala andar)
+    (function guard() {
+      if (!window.FB || !FB.isReady()) return;
+      FB.onUser((u) => {
+        if (!u || !FB.isAdmin(u)) { window.location.href = "login.html"; return; }
+        $("admName").textContent = u.email || u.phoneNumber;
+        window._adminUser = u;
+        boot();
+      });
+    })();
+
+    $("admLogout").addEventListener("click", async (e) => {
+      e.preventDefault();
+      try { await FB.logout(); } catch (_) {}
+      window.location.href = "index.html";
+    });
+
+    let booted = false;
+    function boot() {
+      if (booted) return;
+      booted = true;
+      loadDash();
+    }
+
+    document.querySelectorAll(".adm-tabs button").forEach((b) => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll(".adm-tabs button").forEach((x) => x.classList.remove("on"));
+        document.querySelectorAll(".adm-pane").forEach((x) => x.classList.remove("on"));
+        b.classList.add("on");
+        $("pane-" + b.dataset.pane).classList.add("on");
+        if (b.dataset.pane === "users") loadUsers();
+        if (b.dataset.pane === "leads") loadLeads();
+        if (b.dataset.pane === "notes") initNotes();
+        if (b.dataset.pane === "settings") loadSettings();
+      });
+    });
+
+    async function loadDash() {
+      try {
+        let filled = 0, total = 0;
+        for (let s = 1; s <= 6; s++) {
+          const d = await FB.loadSem(s);
+          for (const sub of d.subjects) {
+            total += sub.topics.length;
+            filled += sub.topics.filter((t) => (t.content || "").trim()).length;
+          }
+        }
+        const leads = await FB.listLeads(1000);
+        let users = [];
+        try { users = await FB.listUsers(1000); } catch (_) {}
+        $("statGrid").innerHTML = `
+          <div class="statcard"><b>${users.length}</b><span>Registered users</span></div>
+          <div class="statcard"><b>${leads.length}</b><span>Demo leads</span></div>
+          <div class="statcard"><b>${total}</b><span>Total topics</span></div>
+          <div class="statcard"><b>${filled}</b><span>Topics me notes</span></div>
+          <div class="statcard"><b>${total - filled}</b><span>Khali topics</span></div>`;
+      } catch (e) {
+        $("statGrid").innerHTML = `<div class="statcard"><b>!</b><span>No data — check Firestore rules + config</span></div>`;
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const rows = await FB.listUsers();
+        $("userCount").textContent = rows.length;
+        // self-diagnose: if even the admin's own profile is missing = writes blocked = rules outdated
+        const me = (window._adminUser && (window._adminUser.email || window._adminUser.phoneNumber)) || "";
+        const meSaved = me && rows.some((u) => (u.email || u.phone) === me);
+        const warn = (!meSaved && me)
+          ? `<tr><td colspan="5" style="background:#fef2f2;color:#b91c1c;font-weight:700">⚠️ Your own login was NOT saved either = profile writes are BLOCKED!<br>Fix: paste the LATEST <b>backend/firestore.rules</b> file into Firebase → Firestore → Rules and <b>Publish</b> it (the users rule is required). Then logout → login again.</td></tr>`
+          : "";
+        $("userRows").innerHTML = warn + (rows.map((u) => `
+          <tr><td>${u.name || "—"}</td><td>${u.email || u.phone || ""}</td>
+          <td>${(u.provider || "").replace(".com", "").replace("google", "Google").replace("password", "Email")}</td>
+          <td>${u.verified ? "✓" : "✗"}</td>
+          <td>${(u.at || "").slice(0, 10)}</td></tr>`).join("") || `<tr><td colspan="5">No registered users yet — the first login will appear here</td></tr>`;
+      } catch (e) {
+        const msg = String((e && e.message) || e || "");
+        const hint = /permission|denied|PERMISSION/i.test(msg)
+          ? " — paste the users rule from Firestore Rules (backend/firestore.rules) and Publish"
+          : (msg ? " — " + msg : "");
+        $("userRows").innerHTML = `<tr><td colspan="5">Could not load${hint}</td></tr>`;
+      }
+    }
+
+    async function loadLeads() {
+      try {
+        const rows = await FB.listLeads();
+        $("leadRows").innerHTML = rows.map((l) => `
+          <tr><td>${l.name || ""}</td><td><a href="tel:${l.phone}">${l.phone || ""}</a></td>
+          <td>Sem ${l.sem || ""}</td><td>${l.slot || ""}</td>
+          <td>${(l.at || "").slice(0, 10)}</td></tr>`).join("") || `<tr><td colspan="5">No leads yet</td></tr>`;
+      } catch (_) {
+        $("leadRows").innerHTML = `<tr><td colspan="5">Could not load</td></tr>`;
+      }
+    }
+
+    // notes manager
+    let curSem = 1, curSub = "", curTopic = null, notesInit = false;
+    async function initNotes() {
+      if (notesInit) return;
+      notesInit = true;
+      $("nSem").innerHTML = [1, 2, 3, 4, 5, 6].map((s) => `<option value="${s}">Semester ${s}</option>`).join("");
+      $("nSem").addEventListener("change", () => { curSem = +$("nSem").value; loadSubs(); });
+      $("nSub").addEventListener("change", () => { curSub = $("nSub").value; loadTopics(); });
+      await loadSubs();
+    }
+    async function loadSubs() {
+      const d = await FB.loadSem(curSem);
+      window._subs = d.subjects;
+      $("nSub").innerHTML = d.subjects.map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
+      curSub = d.subjects[0]?.id || "";
+      loadTopics();
+    }
+    async function loadTopics(hideEditor = true) {
+      if (hideEditor) $("editorBox").hidden = true;
+      const sub = (window._subs || []).find((s) => s.id === curSub);
+      const topics = sub ? sub.topics : [];
+      $("nTopics").innerHTML = topics.map((t) => `
+        <a href="#" data-t="${t.id}" class="${(t.content || "").trim() ? "done" : ""}">
+          <span class="dot"></span><span class="t">${t.id}. ${t.title}</span>
+          <small>${(t.content || "").trim() ? "notes ✓" : "khali"}</small>
+        </a>`).join("");
+      document.querySelectorAll("#nTopics a").forEach((a) => a.addEventListener("click", (e) => {
+        e.preventDefault();
+        openEditor(topics.find((t) => t.id === +a.dataset.t));
+      }));
+    }
+    function openEditor(t) {
+      curTopic = t;
+      $("editorBox").hidden = false;
+      $("edTitle").textContent = `Sem ${curSem} · Topic ${t.id}`;
+      $("edName").value = t.title;
+      $("edContent").value = t.content || "";
+      $("edPdf").value = t.pdf || "";
+      $("edVideo").value = t.video || "";
+      $("edMsg").textContent = "";
+      $("edPreview").href = `topic.html?sem=${curSem}&sub=${encodeURIComponent(curSub)}&t=${t.id}`;
+      $("editorBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    $("edSave").addEventListener("click", async () => {
+      const btn = $("edSave");
+      const msg = $("edMsg");
+      btn.disabled = true;
+      msg.style.color = "";
+      msg.textContent = "Saving…";
+      try {
+        await FB.saveTopic(curSem, curSub, {
+          id: curTopic.id, title: $("edName").value,
+          content: $("edContent").value,
+          pdf: $("edPdf").value.trim(), video: $("edVideo").value.trim()
+        });
+        // refresh list — but keep subject + editor SAME (no reset!)
+        const d = await FB.loadSem(curSem);
+        window._subs = d.subjects;
+        const keep = curSub;
+        $("nSub").innerHTML = d.subjects.map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
+        $("nSub").value = keep;
+        curSub = keep;
+        await loadTopics(false);
+        msg.style.color = "#16a34a";
+        msg.textContent = "Saved ✓ — live on the site (editor stays open, keep writing!)";
+      } catch (e) {
+        msg.style.color = "#b91c1c";
+        msg.textContent = "Save FAILED: " + (e.message || e) + " — Are the rules published?";
+      }
+      btn.disabled = false;
+    });
+
+    // settings
+    async function loadSettings() {
+      const s = await FB.getSettings();
+      $("setCourse").value = s.course || "";
+      $("setTagline").value = s.tagline || "";
+      $("setOwnerName").value = s.owner_name || "";
+      $("setOwnerPhone").value = s.owner_phone || "";
+    }
+    $("setSave").addEventListener("click", async () => {
+      await FB.saveSettings({
+        course: $("setCourse").value, tagline: $("setTagline").value,
+        owner_name: $("setOwnerName").value, owner_phone: $("setOwnerPhone").value });
+      $("setMsg").textContent = "Settings saved ✓";
+    });
+
+  </script>
+</body>
+</html>

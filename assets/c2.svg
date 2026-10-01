@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Semester 2">
+  <rect width="400" height="300" rx="18" fill="#fff1e2"/>
+  <circle cx="62" cy="60" r="52" fill="#f97316" opacity="0.12"/>
+  <circle cx="344" cy="248" r="40" fill="#1d4ed8" opacity="0.1"/>
+  <text x="34" y="92" font-family="Georgia, serif" font-size="64" font-weight="bold" fill="#f97316">02</text>
+  <text x="36" y="122" font-family="Georgia, serif" font-size="22" font-style="italic" fill="#6d7568">Semester Two</text>
+  <g transform="translate(215 130)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 10 h40 l14 60 a34 30 0 0 1 -68 0 Z" fill="#fff" stroke="#1d4ed8" stroke-width="4"/>
+    <path d="M33 60 q13 -10 27 0 q13 10 27 0 l4 14 a34 30 0 0 1 -62 0 Z" fill="#fdba74" stroke="#f97316" stroke-width="3"/>
+    <line x1="52" y1="10" x2="52" y2="-12" stroke="#1d4ed8" stroke-width="4"/>
+    <line x1="68" y1="10" x2="68" y2="-12" stroke="#1d4ed8" stroke-width="4"/>
+    <circle cx="96" cy="30" r="7" fill="none" stroke="#f97316" stroke-width="3"/>
+    <circle cx="112" cy="58" r="5" fill="none" stroke="#f97316" stroke-width="3"/>
+  </g>
+</svg>

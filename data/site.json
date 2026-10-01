@@ -1,0 +1,18 @@
+{
+  "course": "BSc Nursing",
+  "tagline": "BSc Nursing Sem 1-6 Notes - in Simple Language",
+  "owner": {
+    "name": "Xit Jerry Pawan Kumar",
+    "phone": "9928096797",
+    "role": "Site Owner"
+  },
+  "theme": "editorial",
+  "semesters": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ]
+}

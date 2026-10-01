@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Topic Notes · Nursing Media</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="progress" id="readProgress"></div>
+
+  <div class="ubar">
+    <div class="wrap">
+      <span>Syllabus · Notes · Revision — all free</span>
+      <span>Helpline: <a data-call-link href="tel:"><span data-owner-phone></span></a></span>
+    </div>
+  </div>
+
+  <header class="mast">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">
+          <img src="assets/logo.png" alt="Nursing Media logo" />
+        </span>
+        <span><b>Nursing Media</b><small data-course>BSc Nursing</small></span>
+      </a>
+      <nav class="nav">
+        <a class="nl" href="index.html">Home</a>
+        <a class="nl" href="index.html#semesters">Semesters</a>
+        <a class="nl" href="index.html#faq">FAQ</a>
+        <a href="index.html#demo" class="btn primary">Free Demo Class</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="pagehero" id="pageHero">
+      <nav class="crumb"><a href="index.html">Home</a> &nbsp;›&nbsp; <a id="crumbSem" href="#">Semester</a> &nbsp;›&nbsp; <a id="crumbSub" href="#">Subject</a> &nbsp;›&nbsp; <span id="crumbTopic">Topic</span></nav>
+
+      <div class="kicker" id="topicKicker">Topic</div>
+      <h1 id="topicTitle">Topic</h1>
+      <div class="byline">
+        <span><svg class="ic" viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H20v13.5H5.5A1.5 1.5 0 0 0 4 19z"/><path d="M4 19a1.5 1.5 0 0 1 1.5-1.5H20"/></svg><b id="bySub"></b></span>
+        <span id="byMeta"></span>
+        <span><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>5–7 min read</span>
+      </div>
+    </div>
+
+    <div id="loginGate" hidden>
+      <div class="paper" style="text-align:center;padding:48px 28px">
+        <div style="font-size:52px">🔒</div>
+        <h2 style="font-size:24px;margin:12px 0 8px">Login required</h2>
+        <p style="color:var(--muted);font-size:15px;max-width:420px;margin:0 auto 22px">Notes are free, but you need a free account to read them. It takes 10 seconds with Google.</p>
+        <a class="btn btn-fire big" id="gateLoginBtn" href="login.html" style="max-width:320px;margin:0 auto">Login to read notes →</a>
+        <p class="form-note" style="margin-top:14px">New here? Register free with email — verification link included.</p>
+      </div>
+    </div>
+
+    <article class="article" id="topicArticle">
+      <div class="paper">
+        <div class="body" id="topicBody"></div>
+        <div class="attach" id="topicAttach"></div>
+      </div>
+
+      <div class="share-row">
+        <p>Want to share with a friend?</p>
+        <div class="votes">
+          <a class="btn btn-sm" id="waShare" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <button class="btn btn-sm" id="copyLink" type="button">Copy link</button>
+        </div>
+      </div>
+
+      <div class="helpful" id="helpfulBox">
+        <p>Were these notes useful?</p>
+        <div class="votes">
+          <button class="btn" data-vote="yes">Yes, very</button>
+          <button class="btn" data-vote="no">Could be better</button>
+        </div>
+      </div>
+
+      <div class="pager">
+        <a class="btn" id="prevBtn" href="#"><small>← Previous topic</small><b id="prevTitle"></b></a>
+        <a class="btn next primary" id="nextBtn" href="#"><small>Next topic →</small><b id="nextTitle"></b></a>
+      </div>
+
+      <div class="related">
+        <h3>Coming up in this subject</h3>
+        <div class="topiclist" id="relatedList"></div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="foot-brand">
+            <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
+            <b style="font-family:var(--serif);font-size:20px">Nursing Media</b>
+          </div>
+          <p>Semester 1–6 notes in simple language.</p>
+        </div>
+        <div>
+          <h4>Semesters</h4>
+          <ul>
+            <li><a href="semester.html?sem=1">Semester 1</a></li>
+            <li><a href="semester.html?sem=2">Semester 2</a></li>
+            <li><a href="semester.html?sem=3">Semester 3</a></li>
+            <li><a href="semester.html?sem=4">Semester 4</a></li>
+            <li><a href="semester.html?sem=5">Semester 5</a></li>
+            <li><a href="semester.html?sem=6">Semester 6</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#demo">Free demo class</a></li>
+            <li><a href="index.html#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <p><b data-owner-name></b><br />Site Owner<br /><a data-call-link href="tel:" style="font-weight:700"><span data-owner-phone></span></a></p>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Nursing Media · Photos: Pexels</span>
+        <span>Please match with your college syllabus before exams.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script>
+    // gstatic block ho to jsdelivr mirror se Firebase SDK lo
+    if (typeof firebase === "undefined") {
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-storage-compat.js"><\/script>'
+      );
+    }
+  </script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/fb.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/premium.js"></script>
+  <script>
+    // reading progress bar
+    window.addEventListener("scroll", () => {
+      const h = document.documentElement;
+      const p = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+      document.getElementById("readProgress").style.width = (p * 100).toFixed(1) + "%";
+    }, { passive: true });
+
+    // helpful widget (localStorage)
+    function initHelpful(key) {
+      const box = document.getElementById("helpfulBox");
+      const done = localStorage.getItem("edu-helpful-" + key);
+      if (done) { box.innerHTML = `<p>Thanks for answering — this is how notes improve.</p>`; return; }
+      box.querySelectorAll("[data-vote]").forEach((b) => b.addEventListener("click", () => {
+        localStorage.setItem("edu-helpful-" + key, b.dataset.vote);
+        box.innerHTML = b.dataset.vote === "yes"
+          ? `<p>Glad to hear it! The next topic is ready below.</p>`
+          : `<p>Noted. We’ll try to improve this topic — ask on the helpline if in doubt.</p>`;
+      }));
+    }
+
+    (async () => {
+      const SEM_BG = {
+        1: "https://images.pexels.com/photos/32254525/pexels-photo-32254525.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        2: "https://images.pexels.com/photos/19438560/pexels-photo-19438560.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        3: "https://images.pexels.com/photos/32115898/pexels-photo-32115898.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        4: "https://images.pexels.com/photos/32254523/pexels-photo-32254523.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        5: "https://images.pexels.com/photos/27298085/pexels-photo-27298085.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        6: "https://images.pexels.com/photos/31499386/pexels-photo-31499386.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      };
+      const sem = getParam("sem") || "1";
+      const subId = getParam("sub") || "";
+      const tId = parseInt(getParam("t") || "1", 10);
+      document.getElementById("pageHero").style.setProperty("--ph", `url("${SEM_BG[sem]}")`);
+
+      const semLink = document.getElementById("crumbSem");
+      semLink.textContent = "Semester " + sem;
+      semLink.href = "semester.html?sem=" + encodeURIComponent(sem);
+
+      try {
+        const d = await loadJSON(`data/sem${sem}.json`);
+        const sub = d.subjects.find((s) => s.id === subId) || d.subjects[0];
+        const idx = Math.max(0, sub.topics.findIndex((t) => t.id === tId));
+        const topic = sub.topics[idx];
+
+        const subLink = document.getElementById("crumbSub");
+        subLink.textContent = sub.name;
+        subLink.href = `subject.html?sem=${sem}&sub=${encodeURIComponent(sub.id)}`;
+        document.getElementById("crumbTopic").textContent = topic.title;
+
+        document.getElementById("topicKicker").textContent = `Topic ${topic.id} · ${sub.name}`;
+        document.getElementById("topicTitle").textContent = topic.title;
+        document.getElementById("bySub").textContent = sub.name;
+        document.getElementById("byMeta").textContent = `Semester ${sem} · Topic ${topic.id} of ${sub.topics.length}`;
+        document.title = `${topic.title} · ${sub.name} · Nursing Media`;
+
+        const body = document.getElementById("topicBody");
+        if (topic.content && topic.content.trim()) {
+          body.innerHTML = topic.content;
+        } else {
+          body.innerHTML = `<div class="empty"><img class="empty-ill" src="assets/empty.svg" alt="Notes being written" /><b>These notes are being written.</b><br />
+            Good notes take time — content for this topic is coming soon.<br />
+            Meanwhile revise the previous topic, or ask in a <a href="index.html#demo"><b>free demo class</b></a>.</div>`;
+        }
+
+        const attach = document.getElementById("topicAttach");
+        let links = "";
+        if (topic.pdf) links += `<a class="btn accent" href="${esc(topic.pdf)}" target="_blank" rel="noopener">Download PDF</a>`;
+        if (topic.video) links += `<a class="btn" href="${esc(topic.video)}" target="_blank" rel="noopener">Watch video</a>`;
+        attach.innerHTML = links;
+
+        const prev = sub.topics[idx - 1], next = sub.topics[idx + 1];
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        if (prev) { prevBtn.href = `topic.html?sem=${sem}&sub=${encodeURIComponent(sub.id)}&t=${prev.id}`; document.getElementById("prevTitle").textContent = prev.title; }
+        else { prevBtn.style.display = "none"; }
+        if (next) { nextBtn.href = `topic.html?sem=${sem}&sub=${encodeURIComponent(sub.id)}&t=${next.id}`; document.getElementById("nextTitle").textContent = next.title; }
+        else { nextBtn.style.display = "none"; }
+
+        document.getElementById("relatedList").innerHTML = sub.topics.slice(idx + 1, idx + 4).map((t) => `
+          <a href="topic.html?sem=${sem}&sub=${esc(sub.id)}&t=${t.id}">
+            <span class="n">${String(t.id).padStart(2, "0")}</span>
+            <span>${esc(t.title)}</span>
+            <span class="st">Read →</span>
+          </a>`).join("") || `<p style="color:var(--muted);font-size:14px">That was the last topic — back to the <a href="subject.html?sem=${sem}&sub=${encodeURIComponent(sub.id)}">list</a>.</p>`;
+
+        initHelpful(`${sem}-${sub.id}-${topic.id}`);
+
+        // share buttons
+        const shareText = `${topic.title} (${sub.name}, Sem ${sem}) — Nursing Media`;
+        document.getElementById("waShare").href =
+          "https://wa.me/?text=" + encodeURIComponent(shareText + " " + window.location.href);
+        document.getElementById("copyLink").addEventListener("click", async (ev) => {
+          const btn = ev.currentTarget;
+          try {
+            await navigator.clipboard.writeText(window.location.href);
+            btn.textContent = "Copied ✓";
+          } catch (_) {
+            btn.textContent = "Copy failed";
+          }
+          setTimeout(() => { btn.textContent = "Copy link"; }, 2000);
+        });
+      } catch (e) {
+        document.getElementById("topicBody").innerHTML = `<div class="empty">Data not found.</div>`;
+      }
+    })();
+
+    // login gate: guests see a login card instead of notes
+    (function gate() {
+      const article = document.getElementById("topicArticle");
+      const gateBox = document.getElementById("loginGate");
+      const next = "login.html?next=" + encodeURIComponent(
+        window.location.pathname.split("/").pop() + window.location.search);
+      document.getElementById("gateLoginBtn").href = next;
+      function locked() {
+        if (article) article.hidden = true;
+        if (gateBox) gateBox.hidden = false;
+      }
+      function checkFB() {
+        return new Promise((resolve) => {
+          let done = false;
+          const to = setTimeout(() => { if (!done) { done = true; resolve(null); } }, 3500);
+          try {
+            FB.onUser((u) => { if (!done) { done = true; clearTimeout(to); resolve(u); } });
+          } catch (_) { if (!done) { done = true; clearTimeout(to); resolve(null); } }
+        });
+      }
+      (async () => {
+        try {
+          if (window.FB && FB.isReady()) {
+            const u = await checkFB();
+            if (!u) locked();
+          } else {
+            const r = await fetch("api/me");
+            const j = await r.json();
+            if (!j.user) locked();
+          }
+        } catch (_) {
+          // backend/Firebase unreachable — show content (fail open for reading)
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>

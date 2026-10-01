@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" role="img" aria-label="Kitabein">
+  <rect width="200" height="150" rx="12" fill="#dbeafe"/>
+  <rect x="52" y="96" width="96" height="16" rx="4" fill="#1d4ed8"/>
+  <rect x="58" y="80" width="84" height="16" rx="4" fill="#f97316"/>
+  <rect x="52" y="64" width="92" height="16" rx="4" fill="#fdba74" stroke="#f97316" stroke-width="2"/>
+  <rect x="60" y="26" width="80" height="34" rx="4" fill="#fff" stroke="#1d4ed8" stroke-width="3"/>
+  <line x1="70" y1="38" x2="130" y2="38" stroke="#1d4ed8" stroke-width="3" stroke-linecap="round"/>
+  <line x1="70" y1="48" x2="112" y2="48" stroke="#f97316" stroke-width="3" stroke-linecap="round"/>
+</svg>
