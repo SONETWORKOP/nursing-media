@@ -1,5 +1,6 @@
 """Generate placeholder data for edu-notes site.
-Sem 1-6 x 5 subjects x 20 topics = 600 content slots.
+Sem 1-7 x up to 5 subjects x 20 topics.
+WARNING: running this OVERWRITES data/*.json (wipes real subject names).
 Subject names + topic titles/content can be edited later in data/*.json
 """
 import json
@@ -19,13 +20,13 @@ site = {
         "role": "Site Owner"
     },
     "theme": "3d-glass-dark",
-    "semesters": [1, 2, 3, 4, 5, 6]
+    "semesters": [1, 2, 3, 4, 5, 6, 7]
 }
 
 with open(os.path.join(DATA, "site.json"), "w", encoding="utf-8") as f:
     json.dump(site, f, ensure_ascii=False, indent=2)
 
-for sem in range(1, 7):
+for sem in range(1, 8):
     subjects = []
     for s in range(1, 6):
         topics = [
@@ -48,5 +49,5 @@ for sem in range(1, 7):
     with open(os.path.join(DATA, f"sem{sem}.json"), "w", encoding="utf-8") as f:
         json.dump(sem_data, f, ensure_ascii=False, indent=2)
 
-print("Done: site.json + sem1..sem6.json")
-print("Total slots: 6 sems x 5 subjects x 20 topics = 600")
+print("Done: site.json + sem1..sem7.json")
+print("Total slots: 7 sems x up to 5 subjects x 20 topics")

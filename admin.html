@@ -217,7 +217,7 @@
     async function loadDash() {
       const errors = [];
       let filled = 0, total = 0, semsOk = 0;
-      for (let s = 1; s <= 6; s++) {
+      for (let s = 1; s <= 7; s++) {
         try {
           const d = await FB.loadSem(s);
           semsOk++;
@@ -242,7 +242,7 @@
         <div class="statcard"><b>${filled}</b><span>Topics with notes</span></div>
         <div class="statcard"><b>${total - filled}</b><span>Empty topics</span></div>
         ${errors.length ? `<div class="statcard" style="grid-column:1/-1;text-align:left">
-          <b style="font-size:18px">⚠️ ${6 - semsOk} of 6 semesters failed</b>
+          <b style="font-size:18px">⚠️ ${7 - semsOk} of 7 semesters failed</b>
           <span>${errors.map((x) => esc(x)).join("<br>")}</span>
           <div style="margin-top:12px"><button class="btn btn-sm" onclick="window.location.reload()">↻ Retry</button></div>
         </div>` : ``}`;
@@ -277,7 +277,7 @@
     async function initNotes() {
       if (notesInit) return;
       notesInit = true;
-      $("nSem").innerHTML = [1, 2, 3, 4, 5, 6].map((s) => `<option value="${s}">Semester ${s}</option>`).join("");
+      $("nSem").innerHTML = [1, 2, 3, 4, 5, 6, 7].map((s) => `<option value="${s}">Semester ${s}</option>`).join("");
       $("nSem").addEventListener("change", () => { curSem = +$("nSem").value; loadSubs(); });
       $("nSub").addEventListener("change", () => { curSub = $("nSub").value; loadTopics(); });
       await loadSubs();

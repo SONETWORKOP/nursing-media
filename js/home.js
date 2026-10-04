@@ -148,7 +148,8 @@ window.EduHome = (() => {
     3: "https://images.pexels.com/photos/32115898/pexels-photo-32115898.jpeg?auto=compress&cs=tinysrgb&w=500",
     4: "https://images.pexels.com/photos/32254523/pexels-photo-32254523.jpeg?auto=compress&cs=tinysrgb&w=500",
     5: "https://images.pexels.com/photos/27298085/pexels-photo-27298085.jpeg?auto=compress&cs=tinysrgb&w=500",
-    6: "https://images.pexels.com/photos/31499386/pexels-photo-31499386.jpeg?auto=compress&cs=tinysrgb&w=500"
+    6: "https://images.pexels.com/photos/31499386/pexels-photo-31499386.jpeg?auto=compress&cs=tinysrgb&w=500",
+    7: "https://images.pexels.com/photos/32254525/pexels-photo-32254525.jpeg?auto=compress&cs=tinysrgb&w=500"
   };
   const semCache = {};
 
@@ -223,7 +224,7 @@ window.EduHome = (() => {
   function buildExplorer() {
     const pills = document.getElementById("expPills");
     if (!pills) return;
-    pills.innerHTML = [1, 2, 3, 4, 5, 6].map((s) =>
+    pills.innerHTML = [1, 2, 3, 4, 5, 6, 7].map((s) =>
       `<button class="exppill${s === 1 ? " on" : ""}" data-sem="${s}" style="--sbg:url('${SEM_BG[s]}')">
         <span class="pnum">${String(s).padStart(2, "0")}</span>
         <span class="plab">Semester ${s}</span>

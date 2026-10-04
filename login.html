@@ -10,9 +10,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    .auth-wrap { max-width: 480px; margin: 44px auto 64px; }
-    .auth-card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); padding: 38px 34px; position: relative; overflow: hidden; }
-    .auth-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--brand), var(--amber)); }
+    .auth-wrap { max-width: 980px; margin: 44px auto 64px; }
+    .auth-split { display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border-radius: 24px; border: 1px solid var(--line); box-shadow: var(--shadow); background: var(--card); }
+    .auth-side { position: relative; overflow: hidden; padding: 44px 38px; color: #fff; background: linear-gradient(150deg, #1e1b4b 0%, #4c1d95 55%, #7c3aed 100%); display: flex; flex-direction: column; justify-content: center; }
+    .auth-side::before { content: ""; position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(249,115,22,.45), transparent 70%); top: -120px; right: -100px; }
+    .auth-side::after { content: ""; position: absolute; width: 260px; height: 260px; border-radius: 50%; border: 46px solid rgba(255,255,255,.07); bottom: -110px; left: -70px; }
+    .auth-side > * { position: relative; z-index: 1; }
+    .auth-side .brand-mark { width: 58px; height: 58px; background: #fff; }
+    .auth-side h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.18; margin: 18px 0 10px; letter-spacing: -0.5px; }
+    .auth-side h2 span { color: #fdba74; }
+    .auth-side p.sub { color: #d9d4c2; font-size: 15px; line-height: 1.7; }
+    .auth-side ul { list-style: none; margin-top: 22px; display: grid; gap: 12px; padding: 0; }
+    .auth-side li { display: flex; gap: 11px; align-items: flex-start; font-size: 14px; color: #f4f1e6; }
+    .auth-side .tick { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-size: 13px; font-weight: 800; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.4); }
+    .auth-side .sidestat { display: flex; gap: 26px; margin-top: 26px; }
+    .auth-side .sidestat b { font-size: 24px; display: block; color: #fdba74; }
+    .auth-side .sidestat span { font-size: 12px; opacity: .85; letter-spacing: .6px; text-transform: uppercase; }
+    .auth-card { padding: 38px 34px; }
     .auth-card .brandrow { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
     .auth-card .brand-mark { width: 52px; height: 52px; }
     .auth-card h1 { font-size: 27px; }
@@ -26,6 +40,11 @@
     #googleBtn { transition: transform 0.16s ease, box-shadow 0.16s ease; }
     #googleBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(25, 12, 60, 0.14); }
     .spam-note { display: flex; gap: 10px; align-items: flex-start; background: var(--amber-tint); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; font-size: 13px; color: var(--ink-soft); margin-top: 14px; line-height: 1.6; }
+    @media (max-width: 860px) {
+      .auth-split { grid-template-columns: 1fr; }
+      .auth-side { padding: 32px 26px; }
+      .auth-side ul { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -54,7 +73,23 @@
 
   <main class="wrap">
     <div class="auth-wrap">
-      <div class="auth-card">
+      <div class="auth-split reveal">
+        <aside class="auth-side">
+          <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
+          <h2>Your nursing notes, <span>one login away.</span></h2>
+          <p class="sub">Free BSc Nursing notes for Sem 1–7 — login once and pick up right where you left off, on any device.</p>
+          <ul>
+            <li><span class="tick">✓</span> Save bookmarks &amp; track your reading</li>
+            <li><span class="tick">✓</span> 520 topics across 26 subjects</li>
+            <li><span class="tick">✓</span> Works on phone, no app needed</li>
+          </ul>
+          <div class="sidestat">
+            <div><b>520+</b><span>Topics</span></div>
+            <div><b>7</b><span>Semesters</span></div>
+            <div><b>100%</b><span>Free</span></div>
+          </div>
+        </aside>
+        <div class="auth-card">
         <div class="brandrow">
           <span class="brand-mark"><img src="assets/logo.png" alt="Nursing Media logo" /></span>
           <h1 id="authTitle">Welcome back!</h1>
@@ -102,7 +137,8 @@
           <p class="form-note"><a href="#" id="resendLink">Resend verification email</a> · <a href="#" id="verifyLogout">Use a different account</a></p>
         </div>
         <p class="form-note" id="loginNote"></p>
-        <p class="form-note">Logging in with the owner number opens the Admin Panel.</p>
+        <p class="form-note">Logging in with the owner account opens the Admin Panel.</p>
+      </div>
       </div>
     </div>
   </main>

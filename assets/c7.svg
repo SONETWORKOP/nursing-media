@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Semester 7">
+  <rect width="400" height="300" rx="18" fill="#fff1e2"/>
+  <circle cx="58" cy="62" r="48" fill="#f97316" opacity="0.12"/>
+  <text x="34" y="92" font-family="Georgia, serif" font-size="64" font-weight="bold" fill="#f97316">07</text>
+  <text x="36" y="122" font-family="Georgia, serif" font-size="22" font-style="italic" fill="#6d7568">Semester Seven</text>
+  <g transform="translate(225 125)" stroke-linecap="round">
+    <circle cx="55" cy="48" r="30" fill="#ffedd5" stroke="#f97316" stroke-width="4"/>
+    <rect x="47" y="78" width="16" height="14" rx="3" fill="#1d4ed8"/>
+    <rect x="35" y="92" width="40" height="10" rx="5" fill="#1d4ed8"/>
+    <line x1="55" y1="18" x2="55" y2="4" stroke="#1d4ed8" stroke-width="4"/>
+    <line x1="25" y1="26" x2="15" y2="16" stroke="#1d4ed8" stroke-width="4"/>
+    <line x1="85" y1="26" x2="95" y2="16" stroke="#1d4ed8" stroke-width="4"/>
+    <path d="M20 106 q10 -8 20 0 q10 8 20 0 q10 -8 20 0" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+  </g>
+</svg>
