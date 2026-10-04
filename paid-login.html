@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paid Login · Nursing Media</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="ubar"><div class="wrap">
+    <span>Paid Section · Separate ID/Password</span>
+    <span><a href="index.html">Home</a></span>
+  </div></div>
+  <header class="mast"><div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="assets/logo.png" alt="logo" /></span>
+      <span><b>Nursing Media</b><small>Paid Notes</small></span>
+    </a>
+  </div></header>
+  <main class="wrap" style="max-width:480px;margin:44px auto 64px">
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 30px;box-shadow:var(--shadow)">
+      <h1 style="font-size:26px">Paid Login 🔒</h1>
+      <p style="color:var(--muted);font-size:14px;margin:6px 0 18px">Admin se mili <b>Paid ID + Password</b> se login karo. Google/Email yahan kaam nahi karega.</p>
+      <form id="paidForm" novalidate>
+        <div class="form-group"><label for="paidId">Paid ID (jaise NM-A1B2C3)</label>
+          <input id="paidId" type="text" placeholder="NM-XXXXXX" autocomplete="username" style="text-transform:uppercase" /></div>
+        <div class="form-group"><label for="paidPass">Password</label>
+          <input id="paidPass" type="password" placeholder="••••••" autocomplete="current-password" /></div>
+        <div class="form-err" id="paidErr"></div>
+        <button class="btn btn-fire big" type="submit">Open Paid Section →</button>
+      </form>
+      <p class="form-note">ID revoke ho to login band — admin se sampark karo.</p>
+    </div>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    (async () => {
+      try {
+        const r = await fetch("api/paid/me");
+        const j = await r.json();
+        if (j.user) { window.location.href = "paid.html"; }
+      } catch (_) {}
+    })();
+    $("paidForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = $("paidErr");
+      err.textContent = "";
+      const login_id = $("paidId").value.trim(), password = $("paidPass").value;
+      if (!login_id) { err.textContent = "Paid ID likho"; return; }
+      if (!password) { err.textContent = "Password likho"; return; }
+      try {
+        const r = await fetch("api/paid/login", { method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ login_id, password }) });
+        const j = await r.json();
+        if (!j.ok) { err.textContent = j.error || "Login fail"; return; }
+        const next = new URLSearchParams(window.location.search).get("next");
+        window.location.href = (next && !next.includes("..") && !/^https?:/i.test(next)) ? next : "paid.html";
+      } catch (_) { err.textContent = "Backend nahi chal raha — Termux me python3 backend/app.py chalao"; }
+    });
+  </script>
+</body>
+</html>

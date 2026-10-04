@@ -34,3 +34,22 @@ create table if not exists settings (
   key text primary key,
   value text not null default ''
 );
+
+-- Paid section: admin-created ID/password, revoke via is_active=false ya delete
+create table if not exists paid_users (
+  id bigint generated always as identity primary key,
+  login_id text unique not null,
+  name text not null default '',
+  password_hash text not null,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists paid_topics (
+  id bigint generated always as identity primary key,
+  title text not null,
+  content text not null default '',
+  pdf text not null default '',
+  video text not null default '',
+  created_at timestamptz not null default now()
+);

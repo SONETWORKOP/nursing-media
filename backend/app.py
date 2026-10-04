@@ -80,6 +80,22 @@ class SQLiteStore:
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL DEFAULT ''
             );
+            CREATE TABLE IF NOT EXISTS paid_users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                login_id TEXT NOT NULL UNIQUE,
+                name TEXT NOT NULL DEFAULT '',
+                password_hash TEXT NOT NULL,
+                is_active INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+            );
+            CREATE TABLE IF NOT EXISTS paid_topics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL DEFAULT '',
+                pdf TEXT NOT NULL DEFAULT '',
+                video TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+            );
         """)
         self.con.commit()
         if fresh:
@@ -136,6 +152,72 @@ class SQLiteStore:
 
     def set_password(self, uid, pw_hash):
         self.con.execute("UPDATE users SET password_hash=? WHERE id=?", (pw_hash, uid))
+        self.con.commit()
+
+    # -- paid users (admin-created ID/password, revoke via is_active) --
+    def get_paid_user_by_id(self, uid):
+        r = self.con.execute(
+            "SELECT id, login_id, name, is_active, created_at FROM paid_users WHERE id=?",
+            (uid,)).fetchone()
+        return dict(r) if r else None
+
+    def get_paid_user_full(self, login_id):
+        r = self.con.execute("SELECT * FROM paid_users WHERE login_id=?", (login_id,)).fetchone()
+        return dict(r) if r else None
+
+    def create_paid_user(self, login_id, name, pw_hash):
+        try:
+            cur = self.con.execute(
+                "INSERT INTO paid_users (login_id, name, password_hash, is_active) VALUES (?,?,?,1)",
+                (login_id, name, pw_hash))
+            self.con.commit()
+            return cur.lastrowid
+        except sqlite3.IntegrityError:
+            return None
+
+    def list_paid_users(self):
+        return [dict(r) for r in self.con.execute(
+            "SELECT id, login_id, name, is_active, created_at FROM paid_users ORDER BY id DESC")]
+
+    def set_paid_password(self, uid, pw_hash):
+        self.con.execute("UPDATE paid_users SET password_hash=? WHERE id=?", (pw_hash, uid))
+        self.con.commit()
+
+    def set_paid_active(self, uid, active):
+        self.con.execute("UPDATE paid_users SET is_active=? WHERE id=?",
+                         (1 if active else 0, uid))
+        self.con.commit()
+
+    def delete_paid_user(self, uid):
+        self.con.execute("DELETE FROM paid_users WHERE id=?", (uid,))
+        self.con.commit()
+
+    # -- paid topics (sirf paid login se dikhenge) --
+    def list_paid_topics(self):
+        return [dict(r) for r in self.con.execute(
+            "SELECT id, title, content, pdf, video, created_at FROM paid_topics ORDER BY id")]
+
+    def get_paid_topic(self, tid):
+        r = self.con.execute(
+            "SELECT id, title, content, pdf, video, created_at FROM paid_topics WHERE id=?",
+            (tid,)).fetchone()
+        return dict(r) if r else None
+
+    def create_paid_topic(self, title, content, pdf, video):
+        cur = self.con.execute(
+            "INSERT INTO paid_topics (title, content, pdf, video) VALUES (?,?,?,?)",
+            (title, content, pdf, video))
+        self.con.commit()
+        return cur.lastrowid
+
+    def update_paid_topic(self, tid, title, content, pdf, video):
+        self.con.execute(
+            "UPDATE paid_topics SET title=?, content=?, pdf=?, video=? WHERE id=?",
+            (title, content, pdf, video, tid))
+        self.con.commit()
+
+    def delete_paid_topic(self, tid):
+        self.con.execute("DELETE FROM paid_topics WHERE id=?", (tid,))
         self.con.commit()
 
     # -- content --
@@ -238,6 +320,72 @@ class SupabaseStore:
 
     def set_password(self, uid, pw_hash):
         self._req("PATCH", "users", {"id": f"eq.{uid}"}, {"password_hash": pw_hash})
+
+    # -- paid users --
+    def get_paid_user_by_id(self, uid):
+        rows = self._req("GET", "paid_users",
+                         {"select": "id,login_id,name,is_active,created_at", "id": f"eq.{uid}"})
+        return rows[0] if rows else None
+
+    def get_paid_user_full(self, login_id):
+        rows = self._req("GET", "paid_users", {"select": "*", "login_id": f"eq.{login_id}"})
+        return rows[0] if rows else None
+
+    def create_paid_user(self, login_id, name, pw_hash):
+        try:
+            rows = self._req("POST", "paid_users", {"select": "id"},
+                             {"login_id": login_id, "name": name,
+                              "password_hash": pw_hash, "is_active": True},
+                             prefer="return=representation")
+        except RuntimeError as e:
+            if "409" in str(e) or "duplicate" in str(e).lower():
+                return None
+            raise
+        return rows[0]["id"] if rows else None
+
+    def list_paid_users(self):
+        return self._req("GET", "paid_users",
+                         {"select": "id,login_id,name,is_active,created_at", "order": "id.desc"})
+
+    def set_paid_password(self, uid, pw_hash):
+        self._req("PATCH", "paid_users", {"id": f"eq.{uid}"}, {"password_hash": pw_hash})
+
+    def set_paid_active(self, uid, active):
+        self._req("PATCH", "paid_users", {"id": f"eq.{uid}"}, {"is_active": bool(active)})
+
+    def delete_paid_user(self, uid):
+        self._req("DELETE", "paid_users", {"id": f"eq.{uid}"})
+
+    # -- paid topics --
+    def list_paid_topics(self):
+        rows = self._req("GET", "paid_topics",
+                         {"select": "id,title,content,pdf,video,created_at", "order": "id"})
+        return [{"id": r["id"], "title": r["title"], "content": r.get("content") or "",
+                 "pdf": r.get("pdf") or "", "video": r.get("video") or "",
+                 "created_at": r.get("created_at") or ""} for r in rows]
+
+    def get_paid_topic(self, tid):
+        rows = self._req("GET", "paid_topics",
+                         {"select": "id,title,content,pdf,video,created_at", "id": f"eq.{tid}"})
+        if not rows:
+            return None
+        r = rows[0]
+        return {"id": r["id"], "title": r["title"], "content": r.get("content") or "",
+                "pdf": r.get("pdf") or "", "video": r.get("video") or "",
+                "created_at": r.get("created_at") or ""}
+
+    def create_paid_topic(self, title, content, pdf, video):
+        rows = self._req("POST", "paid_topics", {"select": "id"},
+                         {"title": title, "content": content, "pdf": pdf, "video": video},
+                         prefer="return=representation")
+        return rows[0]["id"] if rows else None
+
+    def update_paid_topic(self, tid, title, content, pdf, video):
+        self._req("PATCH", "paid_topics", {"id": f"eq.{tid}"},
+                  {"title": title, "content": content, "pdf": pdf, "video": video})
+
+    def delete_paid_topic(self, tid):
+        self._req("DELETE", "paid_topics", {"id": f"eq.{tid}"})
 
     # -- content --
     def semesters(self):
@@ -372,6 +520,41 @@ def admin_required(fn):
 def valid_phone(phone):
     digits = re.sub(r"\D", "", phone or "")[-10:]
     return digits if re.fullmatch(r"[6-9]\d{9}", digits) else None
+
+
+def normalize_paid_id(raw):
+    s = re.sub(r"[^A-Za-z0-9_-]", "", (raw or "").strip()).upper()
+    return s if 3 <= len(s) <= 32 else None
+
+
+def random_paid_id():
+    return "NM-" + secrets.token_hex(3).upper()
+
+
+def random_paid_password(length=8):
+    alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    return "".join(secrets.choice(alphabet) for _ in range(length))
+
+
+def current_paid_user():
+    uid = session.get("paid_uid")
+    u = store.get_paid_user_by_id(uid) if uid else None
+    if u and not u.get("is_active"):
+        session.pop("paid_uid", None)
+        return None
+    return u
+
+
+def paid_login_required(fn):
+    from functools import wraps
+
+    @wraps(fn)
+    def wrapper(*a, **kw):
+        if not current_paid_user():
+            return jsonify({"ok": False, "error": "Paid login required"}), 401
+        return fn(*a, **kw)
+
+    return wrapper
 
 
 # ================= static site =================
@@ -529,6 +712,127 @@ def admin_password():
         return jsonify({"ok": False, "error": "Password kam se kam 4 akshar"}), 400
     store.set_password(current_user()["id"], generate_password_hash(d["password"]))
     return jsonify({"ok": True})
+
+
+# ================= paid section (separate ID/password, admin-created) =================
+@app.route("/api/paid/login", methods=["POST"])
+def paid_login():
+    d = request.get_json(force=True, silent=True) or {}
+    login_id = normalize_paid_id(d.get("login_id") or d.get("id") or d.get("username"))
+    password = d.get("password") or ""
+    if not login_id:
+        return jsonify({"ok": False, "error": "Sahi Paid ID likho"}), 400
+    row = store.get_paid_user_full(login_id)
+    if not row or not check_password_hash(row["password_hash"], password):
+        return jsonify({"ok": False, "error": "ID ya password galat hai"}), 401
+    if not row.get("is_active"):
+        return jsonify({"ok": False, "error": "Ye ID revoke/deactivate hai — admin se sampark karo"}), 403
+    session["paid_uid"] = row["id"]
+    return jsonify({"ok": True, "user": store.get_paid_user_by_id(row["id"])})
+
+
+@app.route("/api/paid/logout", methods=["POST"])
+def paid_logout():
+    session.pop("paid_uid", None)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/paid/me")
+def paid_me():
+    return jsonify({"ok": True, "user": current_paid_user()})
+
+
+@app.route("/api/paid/topics")
+@paid_login_required
+def paid_topics():
+    return jsonify({"ok": True, "topics": store.list_paid_topics()})
+
+
+@app.route("/api/paid/topic/<int:tid>")
+@paid_login_required
+def paid_topic(tid):
+    t = store.get_paid_topic(tid)
+    if not t:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+    return jsonify({"ok": True, "topic": t})
+
+
+@app.route("/api/admin/paid_users")
+@admin_required
+def admin_paid_users():
+    return jsonify({"ok": True, "users": store.list_paid_users()})
+
+
+@app.route("/api/admin/paid_users", methods=["POST"])
+@admin_required
+def admin_create_paid_user():
+    d = request.get_json(force=True, silent=True) or {}
+    login_id = normalize_paid_id(d.get("login_id")) or random_paid_id()
+    name = (d.get("name") or "").strip()
+    password = d.get("password") or random_paid_password()
+    if len(password) < 4:
+        return jsonify({"ok": False, "error": "Password kam se kam 4 akshar"}), 400
+    if store.get_paid_user_full(login_id):
+        return jsonify({"ok": False, "error": "Ye ID pehle se hai — dusri ID do"}), 400
+    uid = store.create_paid_user(login_id, name, generate_password_hash(password))
+    if not uid:
+        return jsonify({"ok": False, "error": "Create fail — ID duplicate?"}), 400
+    # password sirf abhi dikhega — hash me save hai, dobara nahi milega
+    return jsonify({"ok": True, "user": store.get_paid_user_by_id(uid),
+                    "login_id": login_id, "password": password})
+
+
+@app.route("/api/admin/paid_users/<int:uid>", methods=["PUT"])
+@admin_required
+def admin_update_paid_user(uid):
+    d = request.get_json(force=True, silent=True) or {}
+    u = store.get_paid_user_by_id(uid)
+    if not u:
+        return jsonify({"ok": False, "error": "Not found"}), 404
+    out = {"ok": True}
+    if "is_active" in d:
+        store.set_paid_active(uid, bool(d["is_active"]))
+    if d.get("password"):
+        if len(d["password"]) < 4:
+            return jsonify({"ok": False, "error": "Password kam se kam 4 akshar"}), 400
+        store.set_paid_password(uid, generate_password_hash(d["password"]))
+        out["password"] = d["password"]
+    out["user"] = store.get_paid_user_by_id(uid)
+    return jsonify(out)
+
+
+@app.route("/api/admin/paid_users/<int:uid>", methods=["DELETE"])
+@admin_required
+def admin_delete_paid_user(uid):
+    store.delete_paid_user(uid)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/admin/paid_topics", methods=["GET", "POST"])
+@admin_required
+def admin_paid_topics():
+    if request.method == "POST":
+        d = request.get_json(force=True, silent=True) or {}
+        if len((d.get("title") or "").strip()) < 2:
+            return jsonify({"ok": False, "error": "Title likho"}), 400
+        tid = store.create_paid_topic(d.get("title", "").strip(),
+                                      d.get("content", ""), d.get("pdf", "").strip(),
+                                      d.get("video", "").strip())
+        return jsonify({"ok": True, "topic": store.get_paid_topic(tid)})
+    return jsonify({"ok": True, "topics": store.list_paid_topics()})
+
+
+@app.route("/api/admin/paid_topics/<int:tid>", methods=["PUT", "DELETE"])
+@admin_required
+def admin_paid_topic_item(tid):
+    if request.method == "DELETE":
+        store.delete_paid_topic(tid)
+        return jsonify({"ok": True})
+    d = request.get_json(force=True, silent=True) or {}
+    store.update_paid_topic(tid, d.get("title", ""), d.get("content", ""),
+                            d.get("pdf", "").strip() if d.get("pdf") else "",
+                            d.get("video", "").strip() if d.get("video") else "")
+    return jsonify({"ok": True, "topic": store.get_paid_topic(tid)})
 
 
 if __name__ == "__main__":
