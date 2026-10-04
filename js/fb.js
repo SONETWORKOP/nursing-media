@@ -22,10 +22,17 @@ window.FB = (() => {
     if (ready) return true;
     if (!hasConfig() || typeof firebase === "undefined") return false;
     try {
-      app = firebase.initializeApp(window.FIREBASE_CONFIG);
-      auth = firebase.auth();
+      try {
+        app = firebase.initializeApp(window.FIREBASE_CONFIG);
+      } catch (e) {
+        // dobara init (ya pehle se chalu app) — existing use karo
+        app = firebase.app();
+      }
+      // auth/storage optional: paid pages par sirf app+firestore load hota hai.
+      // inke bina bhi paid login/notes chalna chahiye.
+      try { auth = firebase.auth(); } catch (_) { auth = null; }
       db = firebase.firestore();
-      storage = firebase.storage();
+      try { storage = firebase.storage(); } catch (_) { storage = null; }
       ready = true;
     } catch (e) {
       console.warn("Firebase init fail:", e);
@@ -79,18 +86,24 @@ window.FB = (() => {
   }
 
   /* ---------- auth: Google (free) + Email (free) ---------- */
+  function needAuth() {
+    if (!auth) throw new Error("Auth SDK load nahi hua — ye page sirf paid login ke liye hai");
+  }
   async function googleLogin() {
+    needAuth();
     const provider = new firebase.auth.GoogleAuthProvider();
     const cred = await auth.signInWithPopup(provider);
     return cred.user;
   }
 
   async function emailRegister(email, password) {
+    needAuth();
     const cred = await auth.createUserWithEmailAndPassword(email, password);
     return cred.user;
   }
 
   async function emailLogin(email, password) {
+    needAuth();
     const cred = await auth.signInWithEmailAndPassword(email, password);
     return cred.user;
   }
@@ -136,8 +149,8 @@ window.FB = (() => {
     return cred.user;
   }
 
-  function onUser(cb) { auth.onAuthStateChanged(cb); }
-  async function logout() { await auth.signOut(); }
+  function onUser(cb) { needAuth(); auth.onAuthStateChanged(cb); }
+  async function logout() { needAuth(); await auth.signOut(); }
 
   function userLabel(user) {
     if (!user) return "";
