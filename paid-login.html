@@ -22,42 +22,44 @@
     <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 30px;box-shadow:var(--shadow)">
       <h1 style="font-size:26px">Paid Login 🔒</h1>
       <p style="color:var(--muted);font-size:14px;margin:6px 0 18px">Admin se mili <b>Paid ID + Password</b> se login karo. Google/Email yahan kaam nahi karega.</p>
+      <div id="noFbBox" hidden><div class="notice">Firebase config missing — js/firebase-config.js check karo.</div></div>
       <form id="paidForm" novalidate>
-        <div class="form-group"><label for="paidId">Paid ID (jaise NM-A1B2C3)</label>
+        <div class="form-group"><label for="paidId">Paid ID (jaise NM-XXXXXX)</label>
           <input id="paidId" type="text" placeholder="NM-XXXXXX" autocomplete="username" style="text-transform:uppercase" /></div>
         <div class="form-group"><label for="paidPass">Password</label>
           <input id="paidPass" type="password" placeholder="••••••" autocomplete="current-password" /></div>
         <div class="form-err" id="paidErr"></div>
         <button class="btn btn-fire big" type="submit">Open Paid Section →</button>
       </form>
-      <p class="form-note">ID revoke ho to login band — admin se sampark karo.</p>
+      <p class="form-note">ID revoke ho to login band — admin se sampark karo.<br />
+        ID nahi hai? <a href="https://wa.me/919928096797?text=Hi%2C%20mujhe%20Nursing%20Media%20Paid%20Notes%20lena%20hai" target="_blank" rel="noopener"><b>Buy Paid on WhatsApp →</b></a></p>
     </div>
   </main>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    if (typeof firebase === "undefined") {
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>'
+      );
+    }
+  </script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/fb.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
-    (async () => {
-      try {
-        const r = await fetch("api/paid/me");
-        const j = await r.json();
-        if (j.user) { window.location.href = "paid.html"; }
-      } catch (_) {}
-    })();
+    if (!window.FB || !FB.isReady()) { $("noFbBox").hidden = false; }
+    if (window.FB && FB.paidSession()) { window.location.href = "paid.html"; }
     $("paidForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const err = $("paidErr");
       err.textContent = "";
-      const login_id = $("paidId").value.trim(), password = $("paidPass").value;
-      if (!login_id) { err.textContent = "Paid ID likho"; return; }
-      if (!password) { err.textContent = "Password likho"; return; }
       try {
-        const r = await fetch("api/paid/login", { method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ login_id, password }) });
-        const j = await r.json();
-        if (!j.ok) { err.textContent = j.error || "Login fail"; return; }
+        await FB.paidLogin($("paidId").value, $("paidPass").value);
         const next = new URLSearchParams(window.location.search).get("next");
         window.location.href = (next && !next.includes("..") && !/^https?:/i.test(next)) ? next : "paid.html";
-      } catch (_) { err.textContent = "Backend nahi chal raha — Termux me python3 backend/app.py chalao"; }
+      } catch (e2) { err.textContent = e2.message || "Login fail"; }
     });
   </script>
 </body>

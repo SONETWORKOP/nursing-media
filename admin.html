@@ -310,22 +310,9 @@
       }
     }
 
-    // ---- Paid section (Flask backend /api/*, Firebase guard ke baad) ----
-    // Flask admin session alag hai — pehli baar phone+password maangega.
-    async function flaskAdminEnsure() {
-      let r = await fetch("api/admin/paid_users");
-      if (r.ok) return true;
-      const phone = prompt("Flask Admin phone (default 9928096797):", "9928096797");
-      if (!phone) return false;
-      const password = prompt("Flask Admin password:");
-      if (!password) return false;
-      r = await fetch("api/login", { method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, password }) });
-      if (!r.ok) { alert("Flask admin login fail"); return false; }
-      r = await fetch("api/admin/paid_users");
-      return r.ok;
-    }
+    // ---- Paid section (Firebase Firestore: paid_codes + paid_notes) ----
+    // ID/password admin banata hai, revoke = Deactivate/Delete. Rules file
+    // backend/firestore.rules me Publish karna mat bhoolna.
     function escH(x) {
       return String(x ?? "").replace(/[&<>"']/g, (c) => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -333,55 +320,52 @@
     async function loadPaidUsers() {
       const box = $("paidRows");
       box.innerHTML = `<tr><td colspan="5">Loading…</td></tr>`;
-      if (!(await flaskAdminEnsure())) {
-        box.innerHTML = `<tr><td colspan="5">Flask admin login chahiye (Termux backend chal raha hona chahiye)</td></tr>`;
-        return;
+      try {
+        const rows = await FB.listPaidCodes();
+        box.innerHTML = rows.map((u) => `
+          <tr><td><b>${escH(u.id)}</b></td><td>${escH(u.name || "—")}</td>
+          <td>${u.active !== false ? "✅ Active" : "⛔ Revoked"}</td>
+          <td>${(u.createdAt || "").slice(0, 10)}</td>
+          <td style="white-space:nowrap">
+            <button class="btn btn-sm" data-act="toggle" data-id="${escH(u.id)}">${u.active !== false ? "Revoke" : "Activate"}</button>
+            <button class="btn btn-sm" data-act="reset" data-id="${escH(u.id)}">Reset PW</button>
+            <button class="btn btn-sm" data-act="del" data-id="${escH(u.id)}">Delete</button>
+          </td></tr>`).join("") || `<tr><td colspan="5">Koi paid ID nahi — upar se banao</td></tr>`;
+        box.querySelectorAll("button").forEach((b) => b.addEventListener("click", async () => {
+          const id = b.dataset.id, act = b.dataset.act;
+          try {
+            if (act === "del") {
+              if (!confirm(id + " hamesha ke liye delete?")) return;
+              await FB.deletePaidCode(id);
+            } else if (act === "toggle") {
+              const cur = rows.find((x) => x.id === id);
+              await FB.setPaidCodeActive(id, cur.active === false);
+            } else if (act === "reset") {
+              const np = prompt(id + " ka naya password (4+ akshar):");
+              if (!np || np.length < 4) return;
+              await FB.resetPaidCodePassword(id, np);
+              alert("Naya password copy kar lo: " + np);
+            }
+            loadPaidUsers();
+          } catch (e) { alert("Fail: " + (e.message || e)); }
+        }));
+      } catch (e) {
+        box.innerHTML = `<tr><td colspan="5">Load fail — ${(e.message || e)} (Rules Publish kiye? backend/firestore.rules)</td></tr>`;
       }
-      const r = await fetch("api/admin/paid_users");
-      const j = await r.json();
-      const rows = j.users || [];
-      box.innerHTML = rows.map((u) => `
-        <tr><td><b>${escH(u.login_id)}</b></td><td>${escH(u.name || "—")}</td>
-        <td>${u.is_active ? "✅ Active" : "⛔ Revoked"}</td>
-        <td>${(u.created_at || "").slice(0, 10)}</td>
-        <td style="white-space:nowrap">
-          <button class="btn btn-sm" data-act="toggle" data-id="${u.id}">${u.is_active ? "Revoke" : "Activate"}</button>
-          <button class="btn btn-sm" data-act="reset" data-id="${u.id}">Reset PW</button>
-          <button class="btn btn-sm" data-act="del" data-id="${u.id}">Delete</button>
-        </td></tr>`).join("") || `<tr><td colspan="5">Koi paid ID nahi — upar se banao</td></tr>`;
-      box.querySelectorAll("button").forEach((b) => b.addEventListener("click", async () => {
-        const id = +b.dataset.id, act = b.dataset.act;
-        if (act === "del" && !confirm("Ye paid ID hamesha ke liye delete?")) return;
-        let body = {};
-        if (act === "toggle") {
-          const cur = rows.find((x) => x.id === id);
-          body = { is_active: !cur.is_active };
-        }
-        if (act === "reset") {
-          const np = prompt("Naya password (4+ akshar):");
-          if (!np || np.length < 4) return;
-          body = { password: np };
-          alert("Naya password copy kar lo: " + np);
-        }
-        const rr = await fetch("api/admin/paid_users/" + id, { method: act === "del" ? "DELETE" : "PUT",
-          headers: { "Content-Type": "application/json" }, body: act === "del" ? undefined : JSON.stringify(body) });
-        if (!rr.ok) alert("Fail");
-        loadPaidUsers();
-      }));
     }
     $("puCreate").addEventListener("click", async () => {
       $("puMsg").textContent = "Creating…";
       $("puNew").hidden = true;
-      const r = await fetch("api/admin/paid_users", { method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ login_id: $("puId").value, name: $("puName").value, password: $("puPass").value || undefined }) });
-      const j = await r.json();
-      if (!j.ok) { $("puMsg").textContent = "Fail: " + (j.error || "error"); return; }
-      $("puMsg").textContent = "Ban gaya ✓";
-      $("puNew").hidden = false;
-      $("puNew").innerHTML = `ID: <b>${escH(j.login_id)}</b> &nbsp; Password: <b>${escH(j.password)}</b> &nbsp; <span style="color:var(--muted)">(abhi copy kar lo — dobara nahi dikhega)</span>`;
-      $("puId").value = ""; $("puName").value = ""; $("puPass").value = "";
-      loadPaidUsers();
+      try {
+        const out = await FB.createPaidCode({
+          loginId: $("puId").value, name: $("puName").value,
+          password: $("puPass").value || undefined });
+        $("puMsg").textContent = "Ban gaya ✓";
+        $("puNew").hidden = false;
+        $("puNew").innerHTML = `ID: <b>${escH(out.id)}</b> &nbsp; Password: <b>${escH(out.password)}</b> &nbsp; <span style="color:var(--muted)">(abhi copy kar lo — dobara nahi dikhega)</span>`;
+        $("puId").value = ""; $("puName").value = ""; $("puPass").value = "";
+        loadPaidUsers();
+      } catch (e) { $("puMsg").textContent = "Fail: " + (e.message || e); }
     });
     let ptEditId = null, ptInit = false;
     async function initPaidNotes() {
@@ -393,35 +377,35 @@
       loadPaidTopics();
     }
     async function loadPaidTopics() {
-      if (!(await flaskAdminEnsure())) return;
-      const r = await fetch("api/admin/paid_topics");
-      const j = await r.json();
-      const rows = j.topics || [];
-      $("ptList").innerHTML = rows.map((t) => `
-        <a href="#" data-t="${t.id}">
-          <span class="dot"></span><span class="t">${t.id}. ${escH(t.title)}</span>
-          <small>edit / delete</small>
-        </a>`).join("") || "Koi paid note nahi — upar se likho";
-      $("ptList").querySelectorAll("a").forEach((a) => a.addEventListener("click", (e) => {
-        e.preventDefault();
-        const t = rows.find((x) => x.id === +a.dataset.t);
-        ptEditId = t.id;
-        $("ptTitle").textContent = "Edit Paid Note #" + t.id;
-        $("ptName").value = t.title; $("ptContent").value = t.content || "";
-        $("ptPdf").value = t.pdf || ""; $("ptVideo").value = t.video || "";
-        $("ptCancel").hidden = false;
-      }));
+      try {
+        const rows = await FB.listPaidNotes();
+        $("ptList").innerHTML = rows.map((t) => `
+          <a href="#" data-t="${escH(t.id)}">
+            <span class="dot"></span><span class="t">${escH(t.title)}</span>
+            <small>edit / delete</small>
+          </a>`).join("") || "Koi paid note nahi — upar se likho";
+        $("ptList").querySelectorAll("a").forEach((a) => a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const t = rows.find((x) => x.id === a.dataset.t);
+          ptEditId = t.id;
+          $("ptTitle").textContent = "Edit: " + t.title;
+          $("ptName").value = t.title; $("ptContent").value = t.content || "";
+          $("ptPdf").value = t.pdf || ""; $("ptVideo").value = t.video || "";
+          $("ptCancel").hidden = false;
+        }));
+      } catch (e) { $("ptList").textContent = "Load fail: " + (e.message || e); }
     }
     async function savePaidTopic() {
       $("ptMsg").textContent = "Saving…";
-      const body = { title: $("ptName").value, content: $("ptContent").value, pdf: $("ptPdf").value, video: $("ptVideo").value };
-      let r;
-      if (ptEditId) r = await fetch("api/admin/paid_topics/" + ptEditId, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      else r = await fetch("api/admin/paid_topics", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      const j = await r.json();
-      $("ptMsg").textContent = j.ok ? "Saved ✓" : "Fail: " + (j.error || "error");
-      ptEditId = null; $("ptTitle").textContent = "Naya Paid Note"; $("ptCancel").hidden = true;
-      loadPaidTopics();
+      try {
+        await FB.savePaidNote({ id: ptEditId,
+          title: $("ptName").value, content: $("ptContent").value,
+          pdf: $("ptPdf").value, video: $("ptVideo").value });
+        $("ptMsg").textContent = "Saved ✓";
+        ptEditId = null; $("ptTitle").textContent = "Naya Paid Note"; $("ptCancel").hidden = true;
+        $("ptName").value = ""; $("ptContent").value = ""; $("ptPdf").value = ""; $("ptVideo").value = "";
+        loadPaidTopics();
+      } catch (e) { $("ptMsg").textContent = "Fail: " + (e.message || e); }
     }
 
     // notes manager

@@ -288,6 +288,152 @@ window.FB = (() => {
     say(`Done ✓ — ${added} naye, ${skipped} pehle se the (untouched)`);
   }
 
+  /* ---------- Paid section (ID/password, admin-created, Firestore) ----------
+     paid_codes/{ID}: { name, passHash (SHA-256 of ID::password), active, createdAt }
+     paid_notes/{autoId}: { title, content, pdf, video, order, createdAt }
+     Login = single GET by ID (rules allow get), hash compare client-side.
+     NOTE: static site par gate client-side hai — IDs guess-proof rakho. */
+  const paidId = (raw) => String(raw || "").trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 32);
+
+  async function sha256Hex(s) {
+    const bytes = new TextEncoder().encode(s);
+    if (crypto.subtle?.digest) {
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    // fallback (non-secure, purane browser): simple hash
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
+  }
+
+  const paidHash = (id, password) => sha256Hex(id + "::" + password);
+
+  function randomPaidId() {
+    const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let s = "";
+    for (let i = 0; i < 6; i++) s += abc[Math.floor(Math.random() * abc.length)];
+    return "NM-" + s;
+  }
+
+  function randomPaidPassword(len = 8) {
+    const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let s = "";
+    for (let i = 0; i < (len || 8); i++) s += abc[Math.floor(Math.random() * abc.length)];
+    return s;
+  }
+
+  async function paidLogin(loginId, password) {
+    const id = paidId(loginId);
+    if (!id || !password) throw new Error("ID aur password likho");
+    const doc = await withTimeout(
+      db.collection("paid_codes").doc(id).get(), DB_TIMEOUT, "Paid login");
+    if (!doc.exists) throw new Error("ID ya password galat hai");
+    const d = doc.data() || {};
+    if (d.active === false) throw new Error("Ye ID revoke hai — admin se sampark karo");
+    const h = await paidHash(id, password);
+    if (h !== d.passHash) throw new Error("ID ya password galat hai");
+    const sess = { id, name: d.name || "", at: new Date().toISOString() };
+    try { sessionStorage.setItem("paid_session", JSON.stringify(sess)); } catch (_) {}
+    return sess;
+  }
+
+  function paidSession() {
+    try {
+      const s = JSON.parse(sessionStorage.getItem("paid_session") || "null");
+      return s && s.id ? s : null;
+    } catch (_) { return null; }
+  }
+
+  function paidLogout() {
+    try { sessionStorage.removeItem("paid_session"); } catch (_) {}
+  }
+
+  // Revoke check: apni ID ab bhi active hai? Nahi to session udao.
+  async function paidRefresh() {
+    const s = paidSession();
+    if (!s) return null;
+    const doc = await withTimeout(
+      db.collection("paid_codes").doc(s.id).get(), DB_TIMEOUT, "Paid check");
+    if (!doc.exists || (doc.data() || {}).active === false) {
+      paidLogout();
+      throw new Error("Ye ID revoke hai — admin se sampark karo");
+    }
+    const sess = { id: s.id, name: (doc.data() || {}).name || "", at: s.at };
+    try { sessionStorage.setItem("paid_session", JSON.stringify(sess)); } catch (_) {}
+    return sess;
+  }
+
+  async function listPaidCodes() {
+    const snap = await withTimeout(
+      db.collection("paid_codes").orderBy("createdAt", "desc").limit(500).get(),
+      DB_TIMEOUT, "Paid users");
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  }
+
+  async function createPaidCode({ loginId, name, password }) {
+    const id = paidId(loginId) || randomPaidId();
+    const pass = password || randomPaidPassword();
+    if (pass.length < 4) throw new Error("Password 4+ akshar");
+    const exists = await db.collection("paid_codes").doc(id).get();
+    if (exists.exists) throw new Error("Ye ID pehle se hai");
+    await db.collection("paid_codes").doc(id).set({
+      name: String(name || ""), passHash: await paidHash(id, pass),
+      active: true, createdAt: new Date().toISOString(),
+    });
+    return { id, password: pass };
+  }
+
+  async function setPaidCodeActive(id, active) {
+    await db.collection("paid_codes").doc(paidId(id)).update({ active: !!active });
+  }
+
+  async function resetPaidCodePassword(id, newPassword) {
+    if (!newPassword || newPassword.length < 4) throw new Error("Password 4+ akshar");
+    const pid = paidId(id);
+    await db.collection("paid_codes").doc(pid).update({
+      passHash: await paidHash(pid, newPassword),
+    });
+    return newPassword;
+  }
+
+  async function deletePaidCode(id) {
+    await db.collection("paid_codes").doc(paidId(id)).delete();
+  }
+
+  async function listPaidNotes() {
+    const snap = await withTimeout(
+      db.collection("paid_notes").orderBy("order").get(), DB_TIMEOUT, "Paid notes");
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  }
+
+  async function savePaidNote(note) {
+    const col = db.collection("paid_notes");
+    if (note.id) {
+      await col.doc(note.id).update({
+        title: note.title || "", content: note.content || "",
+        pdf: note.pdf || "", video: note.video || "",
+      });
+      return note.id;
+    }
+    const ref = await col.add({
+      title: note.title || "", content: note.content || "",
+      pdf: note.pdf || "", video: note.video || "",
+      order: Date.now(), createdAt: new Date().toISOString(),
+    });
+    return ref.id;
+  }
+
+  async function deletePaidNote(id) {
+    await db.collection("paid_notes").doc(id).delete();
+  }
+
   // turant init (taaki neeche wali scripts ko ready mile) + backup
   init();
   document.addEventListener("DOMContentLoaded", init);
@@ -299,6 +445,9 @@ window.FB = (() => {
     onUser, logout, userLabel, isAdmin, isAdminPhone,
     saveUserProfile, listUsers,
     saveTopic, saveSubject, saveSettings, getSettings,
-    listLeads, addLead, seedFromJson, syncSubjectsFromJson
+    listLeads, addLead, seedFromJson, syncSubjectsFromJson,
+    paidId, paidLogin, paidSession, paidLogout, paidRefresh,
+    listPaidCodes, createPaidCode, setPaidCodeActive, resetPaidCodePassword, deletePaidCode,
+    listPaidNotes, savePaidNote, deletePaidNote,
   };
 })();

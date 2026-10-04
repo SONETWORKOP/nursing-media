@@ -30,23 +30,34 @@
     <p style="color:var(--muted);font-size:14.5px;margin:6px 0 18px">Sirf paid ID se — logout karte hi band.</p>
     <div id="list"><p>Loading…</p></div>
   </main>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    if (typeof firebase === "undefined") {
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>'
+      );
+    }
+  </script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/fb.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     (async () => {
-      let me;
+      if (!window.FB || !FB.isReady()) { $("list").innerHTML = "<p>Firebase config missing.</p>"; return; }
+      const sess0 = FB.paidSession();
+      if (!sess0) { window.location.href = "paid-login.html?next=paid.html"; return; }
+      // revoke check: ID ab bhi active hai?
+      let sess;
+      try { sess = await FB.paidRefresh(); }
+      catch (e) { window.location.href = "paid-login.html"; return; }
+      // notes load
       try {
-        const r = await fetch("api/paid/me");
-        me = (await r.json()).user;
-      } catch (_) {}
-      if (!me) { window.location.href = "paid-login.html?next=paid.html"; return; }
-      $("who").textContent = me.login_id + (me.name ? " · " + me.name : "");
-      try {
-        const r = await fetch("api/paid/topics");
-        if (r.status === 401) { window.location.href = "paid-login.html?next=paid.html"; return; }
-        const j = await r.json();
-        const rows = j.topics || [];
-        $("list").innerHTML = rows.map((t) => `
+        const fresh = await FB.listPaidNotes();
+        $("who").textContent = sess.id + (sess.name ? " · " + sess.name : "");
+        $("list").innerHTML = fresh.map((t) => `
           <div class="paid-card"><h3>${esc(t.title)}</h3>
             <div class="body">${t.content || "<i>Content jald aa raha</i>"}</div>
             <div class="row">
@@ -54,11 +65,15 @@
               ${t.video ? `<a class="btn btn-sm" href="${esc(t.video)}" target="_blank" rel="noopener">Video ↗</a>` : ""}
             </div>
           </div>`).join("") || "<p>Koi paid note nahi — admin se poocho.</p>";
-      } catch (_) { $("list").innerHTML = "<p>Backend nahi chal raha.</p>"; }
+      } catch (e) {
+        // revoke hua to session udao
+        if (/revoke|permission|denied/i.test(e.message || "")) { FB.paidLogout(); window.location.href = "paid-login.html"; return; }
+        $("list").innerHTML = "<p>Load fail: " + esc(e.message || e) + "</p>";
+      }
     })();
-    $("paidLogout").addEventListener("click", async (e) => {
+    $("paidLogout").addEventListener("click", (e) => {
       e.preventDefault();
-      try { await fetch("api/paid/logout", { method: "POST" }); } catch (_) {}
+      try { FB.paidLogout(); } catch (_) {}
       window.location.href = "paid-login.html";
     });
   </script>

@@ -33,5 +33,24 @@ service cloud.firestore {
         request.auth.token.email == "ojhashivam81@gmail.com";
     }
 
+    // Paid section (ID/password, admin-created):
+    // - paid_codes/{ID}: single GET sab kar sakte (login ke liye ID pata hona chahiye),
+    //   LIST/WRITE sirf OWNER. Password hash me hota hai, plain kabhi nahi.
+    // - paid_notes: padhna sab ke liye khula (UI paid-login se gate hota hai),
+    //   likhna sirf OWNER.
+    match /paid_codes/{codeId} {
+      allow get: if true;
+      allow list: if request.auth != null &&
+        request.auth.token.email == "ojhashivam81@gmail.com";
+      allow create, update, delete: if request.auth != null &&
+        request.auth.token.email == "ojhashivam81@gmail.com";
+    }
+
+    match /paid_notes/{noteId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null &&
+        request.auth.token.email == "ojhashivam81@gmail.com";
+    }
+
   }
 }
