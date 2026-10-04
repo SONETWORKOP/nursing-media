@@ -94,6 +94,10 @@
     </section>
 
     <section class="adm-pane" id="pane-paidusers">
+      <div class="tablewrap" style="margin-bottom:12px"><table class="users"><tbody>
+        <tr><td style="font-size:13.5px">Firebase login: <b id="paidWho">…</b><br />
+        <span style="color:var(--muted)">Rules owner se match hona chahiye: ojhashivam81@gmail.com ya +919928096797. Kuch aur dikhe to usi Gmail/phone se login karo.</span></td></tr>
+      </tbody></table></div>
       <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px">
         <h3>Naya Paid ID banao</h3>
         <p class="hint">ID khaali chhodo to auto (NM-XXXXXX), password khaali chhodo to auto-strong. Password sirf banate waqt ek baar dikhega — usko copy karke student ko de do.</p>
@@ -321,6 +325,12 @@
       const box = $("paidRows");
       box.innerHTML = `<tr><td colspan="5">Loading…</td></tr>`;
       try {
+        const au = (window.firebase && firebase.auth && firebase.auth().currentUser) || null;
+        $("paidWho").textContent = au
+          ? `${au.email || "no-email"} / ${au.phoneNumber || "no-phone"} (uid ${au.uid.slice(0, 8)}…)`
+          : "Firebase login nahi mila!";
+      } catch (_) {}
+      try {
         const rows = await FB.listPaidCodes();
         box.innerHTML = rows.map((u) => `
           <tr><td><b>${escH(u.id)}</b></td><td>${escH(u.name || "—")}</td>
@@ -366,10 +376,10 @@
         $("puId").value = ""; $("puName").value = ""; $("puPass").value = "";
         loadPaidUsers();
       } catch (e) {
-        const msg = String(e.message || e);
-        $("puMsg").textContent = /permission|insufficient/i.test(msg)
-          ? "Fail: Permission denied — Firebase → Firestore → Rules me backend/firestore.rules paste karke Publish karo, phir retry. (Phone-login ho to bhi ab chalega.)"
-          : "Fail: " + msg;
+        const msg = String((e && (e.code || e.message)) || e);
+        $("puMsg").textContent = /permission|insufficient|denied/i.test(msg)
+          ? `Fail: ${msg} — Rules me isOwner() wala block Publish hua? Upar Firebase login wali line owner se match honi chahiye.`
+          : "Fail: " + (e.message || e);
       }
     });
     let ptEditId = null, ptInit = false;
