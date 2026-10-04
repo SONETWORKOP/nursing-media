@@ -1,23 +1,13 @@
 // ============================================================
 // FIRESTORE RULES — Nursing Media
-// Paste: Firebase Console → Firestore Database → Rules tab → Publish
-// Matlab:
-//  - Notes (site/config, sems): SAB padh sakte hain, sirf LOGIN user likh sakta hai
-//  - Leads: koi bhi demo form bhar sakta hai, sirf LOGIN user dekh sakta hai
+// Firebase Console → Firestore Database → Rules tab:
+//   1. andar ka SAB kuch select-all karke DELETE karo
+//   2. ye pura file paste karo → Publish
 // ============================================================
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Owner = ye Gmail YA ye phone (+91 ke saath). Phone-login wale admin
-    // ke token me email nahi hota, isliye phone check bhi zaruri hai.
-    function isOwner() {
-      return request.auth != null && (
-        request.auth.token.email == "ojhashivam81@gmail.com" ||
-        request.auth.token.phone_number == "+919928096797"
-      );
-    }
 
     match /site/config {
       allow read: if true;
@@ -34,27 +24,20 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null;
     }
 
-    // Registered users: khud ka profile khud likhe, list sirf OWNER dekhe
-    // Neeche apna Gmail likho (yehi admin hai):
     match /users/{uid} {
       allow create, update: if request.auth != null && request.auth.uid == uid;
-      allow read: if isOwner();
+      allow read: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
     }
 
-    // Paid section (ID/password, admin-created):
-    // - paid_codes/{ID}: single GET sab kar sakte (login ke liye ID pata hona chahiye),
-    //   LIST/WRITE sirf OWNER. Password hash me hota hai, plain kabhi nahi.
-    // - paid_notes: padhna sab ke liye khula (UI paid-login se gate hota hai),
-    //   likhna sirf OWNER.
     match /paid_codes/{codeId} {
       allow get: if true;
-      allow list: if isOwner();
-      allow create, update, delete: if isOwner();
+      allow list: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
+      allow create, update, delete: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
     }
 
     match /paid_notes/{noteId} {
       allow read: if true;
-      allow create, update, delete: if isOwner();
+      allow create, update, delete: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
     }
 
   }
