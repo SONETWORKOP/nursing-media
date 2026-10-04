@@ -10,6 +10,15 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Owner = ye Gmail YA ye phone (+91 ke saath). Phone-login wale admin
+    // ke token me email nahi hota, isliye phone check bhi zaruri hai.
+    function isOwner() {
+      return request.auth != null && (
+        request.auth.token.email == "ojhashivam81@gmail.com" ||
+        request.auth.token.phone_number == "+919928096797"
+      );
+    }
+
     match /site/config {
       allow read: if true;
       allow write: if request.auth != null;
@@ -29,8 +38,7 @@ service cloud.firestore {
     // Neeche apna Gmail likho (yehi admin hai):
     match /users/{uid} {
       allow create, update: if request.auth != null && request.auth.uid == uid;
-      allow read: if request.auth != null &&
-        request.auth.token.email == "ojhashivam81@gmail.com";
+      allow read: if isOwner();
     }
 
     // Paid section (ID/password, admin-created):
@@ -40,16 +48,13 @@ service cloud.firestore {
     //   likhna sirf OWNER.
     match /paid_codes/{codeId} {
       allow get: if true;
-      allow list: if request.auth != null &&
-        request.auth.token.email == "ojhashivam81@gmail.com";
-      allow create, update, delete: if request.auth != null &&
-        request.auth.token.email == "ojhashivam81@gmail.com";
+      allow list: if isOwner();
+      allow create, update, delete: if isOwner();
     }
 
     match /paid_notes/{noteId} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null &&
-        request.auth.token.email == "ojhashivam81@gmail.com";
+      allow create, update, delete: if isOwner();
     }
 
   }

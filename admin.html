@@ -365,7 +365,12 @@
         $("puNew").innerHTML = `ID: <b>${escH(out.id)}</b> &nbsp; Password: <b>${escH(out.password)}</b> &nbsp; <span style="color:var(--muted)">(abhi copy kar lo — dobara nahi dikhega)</span>`;
         $("puId").value = ""; $("puName").value = ""; $("puPass").value = "";
         loadPaidUsers();
-      } catch (e) { $("puMsg").textContent = "Fail: " + (e.message || e); }
+      } catch (e) {
+        const msg = String(e.message || e);
+        $("puMsg").textContent = /permission|insufficient/i.test(msg)
+          ? "Fail: Permission denied — Firebase → Firestore → Rules me backend/firestore.rules paste karke Publish karo, phir retry. (Phone-login ho to bhi ab chalega.)"
+          : "Fail: " + msg;
+      }
     });
     let ptEditId = null, ptInit = false;
     async function initPaidNotes() {
