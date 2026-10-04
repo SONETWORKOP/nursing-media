@@ -122,6 +122,12 @@
         <button class="btn btn-fire" id="setSave">Save settings ✓</button>
         <div class="savemsg" id="setMsg"></div>
       </div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:var(--shadow);margin-top:16px">
+        <h3>Restore Default Data</h3>
+        <p class="hint">Agar dashboard me 0 topics dikhe ya subjects khaali hon to ye dabao — sirf MISSING data bharega, tumhara likha notes bilkul safe rahega.</p>
+        <button class="btn" id="seedBtn">Restore default data ⬆</button>
+        <div class="savemsg" id="seedMsg"></div>
+      </div>
     </section>
 
   </main>
@@ -248,7 +254,7 @@
         $("userCount").textContent = rows.length;
         // self-diagnose: if even the admin's own profile is missing = writes blocked = rules outdated
         const me = (window._adminUser && (window._adminUser.email || window._adminUser.phoneNumber)) || "";
-        const meSaved = me && rows.some((u) => (u.email || u.phone) === me));
+        const meSaved = me && rows.some((u) => (u.email || u.phone) === me);
         const warn = (!meSaved && me)
           ? `<tr><td colspan="5" style="background:#fef2f2;color:#b91c1c;font-weight:700">⚠️ Your own login was NOT saved either = profile writes are BLOCKED!<br>Fix: paste the LATEST <b>backend/firestore.rules</b> file into Firebase → Firestore → Rules and <b>Publish</b> it (the users rule is required). Then logout → login again.</td></tr>`
           : "";
@@ -361,6 +367,17 @@
         course: $("setCourse").value, tagline: $("setTagline").value,
         owner_name: $("setOwnerName").value, owner_phone: $("setOwnerPhone").value });
       $("setMsg").textContent = "Settings saved ✓";
+    });
+
+    $("seedBtn").addEventListener("click", async () => {
+      if (!confirm("Sirf MISSING data bharega — tumhara likha notes bilkul safe rahega. Aage badhein?")) return;
+      $("seedMsg").textContent = "Restoring… (1-2 min lag sakta hai)";
+      try {
+        await FB.seedFromJson((m) => { $("seedMsg").textContent = m; });
+        loadDash();
+      } catch (e) {
+        $("seedMsg").textContent = "Fail: " + (e.message || e);
+      }
     });
 
   </script>
