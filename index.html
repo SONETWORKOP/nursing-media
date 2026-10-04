@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nursing Media — BSc Nursing Free Demo + Sem 1–6 Notes</title>
-  <meta name="description" content="Book a BSc Nursing free demo class + Sem 1-6 notes, 5 subjects, 20 topics each. Everything on one page." />
+  <title>Nursing Media — BSc Nursing Notes Sem 1–6</title>
+  <meta name="description" content="BSc Nursing free notes Sem 1-6, 5 subjects, 20 topics each. Everything on one page." />
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +15,7 @@
 
   <div class="ubar">
     <div class="wrap">
-      <span><span id="todayDate"></span><span class="sep">|</span>BSc Nursing · Notes + Free Demo — all free</span>
+      <span><span id="todayDate"></span><span class="sep">|</span>BSc Nursing · Free Notes — all free</span>
       <span>Helpline: <a data-call-link href="tel:"><span data-owner-phone></span></a></span>
     </div>
   </div>
@@ -32,7 +32,7 @@
         <a class="nl" href="#explorer">Notes</a>
         <a class="nl" href="#kaise">How to study</a>
         <a class="nl" href="#faq">FAQ</a>
-        <a href="#demo" class="btn btn-fire btn-sm">Free Demo</a>
+        <a href="#explorer" class="btn btn-fire btn-sm">Start Reading</a>
       </nav>
     </div>
   </header>
@@ -43,26 +43,26 @@
     </figure>
   </div>
 
-  <!-- MAIN HERO = FREE DEMO -->
-  <section class="hero" id="demo">
+  <!-- MAIN HERO -->
+  <section class="hero" id="top">
     <div class="orb o1"></div><div class="orb o2"></div>
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <div class="badgecols">
-          <div><b>Free Demo Class</b><span>3-step booking</span></div>
-          <div><b>Admission Open</b><span>Sem 1–6</span></div>
+          <div><b>600 Topics</b><span>Exam ready notes</span></div>
+          <div><b>Sem 1–6</b><span>Full coverage</span></div>
           <div><b>100% Free</b><span>No fees</span></div>
         </div>
-        <h1>Ace BSc Nursing <span class="grad-text">with a Free Demo Class</span></h1>
-        <p class="sub">Fill the form and an expert will call to schedule your <b>free demo class</b> — plus <b>600 notes</b> for Sem 1–6, all open on this page. No rote learning, only understanding.</p>
+        <h1>Ace BSc Nursing <span class="grad-text">with Free Notes</span></h1>
+        <p class="sub"><b>600 notes</b> for Sem 1–6, all open on this page. Simple language, syllabus order. No rote learning, only understanding.</p>
         <ul class="hero-points">
-          <li><span class="tick">✓</span> 3-step booking — name, semester, time slot</li>
+          <li><span class="tick">✓</span> Subject-wise, topic by topic</li>
           <li><span class="tick">✓</span> 600 topics, Sem 1–6, all on this page</li>
           <li><span class="tick">✓</span> No fees, no app install needed</li>
         </ul>
         <div class="hero-cta">
-          <a href="#demo-form" class="btn btn-fire btn-lg btn-pulse">Book FREE Demo →</a>
-          <a href="#explorer" class="btn btn-light btn-lg">Read Notes</a>
+          <a href="#explorer" class="btn btn-fire btn-lg btn-pulse">Start Reading →</a>
+          <a href="#library" class="btn btn-light btn-lg">Browse Library</a>
         </div>
         <div class="hero-stats">
           <div class="hstat"><b><span data-count="600">0</span><em>+</em></b><span>Topics</span></div>
@@ -75,62 +75,6 @@
         <div class="float-card fc1"><b>600+</b><span>Topics Free</span></div>
         <div class="float-card fc2"><span class="stars">★★★★★</span><b style="font-size:15px">Trusted by students</b></div>
         <div class="float-card fc3"><b>100%</b><span>Free Notes</span></div>
-      </div>
-    </div>
-
-    <div class="wrap">
-      <div class="demo-strip">
-      <div class="lead-card" id="leadBox">
-        <h3>Book Your <span>FREE Demo Class</span></h3>
-        <p>Fill the form — an expert will call to schedule your free demo</p>
-        <div class="steps-dots" id="leadDots"><span class="on"></span><span></span><span></span></div>
-        <form id="demoForm" novalidate>
-          <div class="lstep" data-step="1">
-            <div class="form-group">
-              <label for="leadName">Step 1 — Your name</label>
-              <input id="leadName" type="text" placeholder="e.g. Rahul Sharma" autocomplete="name" />
-            </div>
-            <div class="form-group">
-              <label for="leadPhone">Mobile number</label>
-              <input id="leadPhone" type="tel" placeholder="10-digit number" autocomplete="tel" maxlength="13" />
-            </div>
-            <div class="form-err" id="leadErr"></div>
-            <button class="btn btn-fire big" type="button" id="toStep2">Continue →</button>
-          </div>
-          <div class="lstep" data-step="2" hidden>
-            <div class="form-group">
-              <label for="leadSem">Step 2 — Choose your semester</label>
-              <select id="leadSem">
-                <option value="1">Semester 1</option>
-                <option value="2" selected>Semester 2</option>
-                <option value="3">Semester 3</option>
-                <option value="4">Semester 4</option>
-                <option value="5">Semester 5</option>
-                <option value="6">Semester 6</option>
-              </select>
-            </div>
-            <div class="lrow">
-              <button class="btn" type="button" data-back="1">← Back</button>
-              <button class="btn btn-fire" type="button" id="toStep3">Continue →</button>
-            </div>
-          </div>
-          <div class="lstep" data-step="3" hidden>
-            <div class="form-group">
-              <label>Step 3 — Choose a call time</label>
-              <div class="slots" id="slotChips">
-                <button type="button" class="slot on" data-slot="Morning (9–12)">Morning · 9–12</button>
-                <button type="button" class="slot" data-slot="Afternoon (12–4)">Afternoon · 12–4</button>
-                <button type="button" class="slot" data-slot="Evening (4–8)">Evening · 4–8</button>
-              </div>
-            </div>
-            <div class="lrow">
-              <button class="btn" type="button" data-back="2">← Back</button>
-              <button class="btn btn-fire" type="submit" id="demo-form">Book demo ✓</button>
-            </div>
-          </div>
-        </form>
-        <p class="form-note">Your number is only used for the callback. Never shared.</p>
-      </div>
       </div>
     </div>
   </section>
@@ -188,7 +132,7 @@
         <h2>Three Steps, Zero Confusion</h2>
       </div>
       <div class="steps">
-        <div class="step"><div class="sno">Step — 01</div><h3>Get a free demo</h3><p>Fill the form above — an expert will build your study plan.</p></div>
+        <div class="step"><div class="sno">Step — 01</div><h3>Pick your semester</h3><p>Choose Sem 1–6 from the tabs below — locked subjects are coming soon.</p></div>
         <div class="step"><div class="sno">Step — 02</div><h3>Open semester + subject</h3><p>Pick your semester from the tabs above, then expand a subject.</p></div>
         <div class="step"><div class="sno">Step — 03</div><h3>Topics 1 to 20</h3><p>Click a chip, read the notes, and move ahead with Prev/Next.</p></div>
       </div>
@@ -229,10 +173,10 @@
         <div>
           <div class="kicker">Your Mentor</div>
           <h2>Talk Directly, Clear Doubts on the Spot</h2>
-          <p><b data-owner-name></b> — runs Nursing Media and builds study plans for nursing students. Don’t want to wait for the form? Call now.</p>
+          <p><b data-owner-name></b> — runs Nursing Media and builds study plans for nursing students. Questions? Just call now.</p>
           <div class="mrow">
             <a class="btn btn-fire" data-call-link href="tel:">Call <span data-owner-phone></span></a>
-            <a class="btn" href="#demo">Book a free demo</a>
+            <a class="btn" href="#explorer">Start Reading</a>
           </div>
         </div>
       </div>
@@ -247,7 +191,7 @@
       </div>
       <div class="faq">
         <div class="faq-item"><button class="faq-q">Are these notes really free?<span class="arr">+</span></button><div class="faq-a"><p>Completely free. 6 semesters, 30 subjects, 600 topics — all open. No paywall. You just need a free account (Google or email) to read the notes.</p></div></div>
-        <div class="faq-item"><button class="faq-q">What happens in a free demo class?<span class="arr">+</span></button><div class="faq-a"><p>You get a call after filling the form — important topics for your semester, a study plan and exam tips, all free.</p></div></div>
+        <div class="faq-item"><button class="faq-q">Some subjects show a lock. Why?<span class="arr">+</span></button><div class="faq-a"><p>Locked subjects are coming soon — their notes are being written right now.</p></div></div>
         <div class="faq-item"><button class="faq-q">In what order should I read the notes?<span class="arr">+</span></button><div class="faq-a"><p>Topic 1 to 20, in numbered order. That is the syllabus order.</p></div></div>
         <div class="faq-item"><button class="faq-q">Will it work on my phone?<span class="arr">+</span></button><div class="faq-a"><p>Absolutely — the site is phone-first. No app install needed.</p></div></div>
         <div class="faq-item"><button class="faq-q">Where do I report a mistake?<span class="arr">+</span></button><div class="faq-a"><p>Just call the helpline number above — fixes go live in 1–2 days.</p></div></div>
@@ -281,7 +225,6 @@
           <h4>Site</h4>
           <ul>
             <li><a href="#explorer">Notes</a></li>
-            <li><a href="#demo">Free demo class</a></li>
             <li><a href="#faq">FAQ</a></li>
           </ul>
         </div>
@@ -296,8 +239,6 @@
       </div>
     </div>
   </footer>
-
-  <a class="stickycta" href="#demo">Free Demo Class — book now</a>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>

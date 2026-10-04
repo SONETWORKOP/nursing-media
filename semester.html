@@ -31,7 +31,7 @@
         <a class="nl" href="index.html">Home</a>
         <a class="nl" href="index.html#semesters">Semesters</a>
         <a class="nl" href="index.html#faq">FAQ</a>
-        <a href="index.html#demo" class="btn primary">Free Demo Class</a>
+        <a href="index.html#explorer" class="btn primary">Browse Notes</a>
       </nav>
     </div>
   </header>
@@ -48,14 +48,14 @@
     </div>
 
     <section class="statsband reveal">
-      <div><b>5</b><span>Subjects in this semester</span></div>
+      <div><b id="statSubs">5</b><span>Subjects · some locked</span></div>
       <div><b>100</b><span>Topics, in order</span></div>
       <div><b>100%</b><span>Free notes</span></div>
     </section>
 
     <div class="subgrid" id="subGrid"></div>
 
-    <div class="notice">Doubts while studying? Fill the form and you’ll get a call — <a class="btn btn-fire btn-sm" href="index.html#demo">Free demo class</a></div>
+    <div class="notice">Confused where to start? Open any subject below — Topic 1 is the best first step.</div>
   </main>
 
   <footer class="site">
@@ -83,7 +83,6 @@
           <h4>Site</h4>
           <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#demo">Free demo class</a></li>
             <li><a href="index.html#faq">FAQ</a></li>
           </ul>
         </div>
@@ -128,6 +127,18 @@
         "https://images.pexels.com/photos/27298085/pexels-photo-27298085.jpeg?auto=compress&cs=tinysrgb&w=600"
       ];
       const sem = getParam("sem") || "1";
+      function lockedCards(n) {
+        let h = "";
+        for (let k = 0; k < n; k++) {
+          h += `<div class="subcard locked-card">
+            <span class="lockicon">🔒</span>
+            <h3>Coming Soon</h3>
+            <p>New subject notes on the way</p>
+            <span class="tag">Locked</span>
+          </div>`;
+        }
+        return h;
+      }
       const SEM_BG = {
         1: "https://images.pexels.com/photos/32254525/pexels-photo-32254525.jpeg?auto=compress&cs=tinysrgb&w=1200",
         2: "https://images.pexels.com/photos/19438560/pexels-photo-19438560.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -143,6 +154,7 @@
       document.title = "Semester " + sem + " Notes · Nursing Media";
       try {
         const d = await loadJSON(`data/sem${sem}.json`);
+        document.getElementById("statSubs").textContent = d.subjects.length;
         document.getElementById("subGrid").innerHTML = d.subjects.map((s, i) => `
           <a class="subcard" href="subject.html?sem=${sem}&sub=${esc(s.id)}">
             <img class="cover" src="${MOTIF_PHOTOS[i % 5]}" alt="${esc(s.name)}" loading="lazy" onerror="this.onerror=null;this.src='assets/m${(i % 5) + 1}.svg';" />
@@ -150,7 +162,7 @@
             <h3>${esc(s.name)}</h3>
             <p>${s.topics.length} topics · Sem ${sem}</p>
             <span class="more">View topics <svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>`).join("");
+          </a>`).join("") + lockedCards(Math.max(0, 5 - d.subjects.length));
       } catch (e) {
         document.getElementById("subGrid").innerHTML =
           `<div class="paper"><div class="empty">Semester ${esc(sem)} data not found.</div></div>`;

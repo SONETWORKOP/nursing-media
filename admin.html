@@ -70,12 +70,11 @@
       <span class="spacer"></span>
       <a class="btn btn-sm" href="index.html">← Open site</a>
     </div>
-    <p style="color:var(--muted);font-size:14.5px">Notes, leads and settings — all in the cloud, live on the site as soon as you save.</p>
+    <p style="color:var(--muted);font-size:14.5px">Notes, users and settings — all in the cloud, live on the site as soon as you save.</p>
 
     <div class="adm-tabs">
       <button class="on" data-pane="dash">Dashboard</button>
       <button data-pane="users">Registered Users</button>
-      <button data-pane="leads">Demo Leads</button>
       <button data-pane="notes">Notes Manager</button>
       <button data-pane="settings">Settings</button>
     </div>
@@ -92,19 +91,13 @@
       <p class="hint">Every student who logs in with Google/Email appears here. Total: <b id="userCount">0</b></p>
     </section>
 
-    <section class="adm-pane" id="pane-leads">
-      <div class="tablewrap"><table class="users">
-        <thead><tr><th>Name</th><th>Mobile</th><th>Sem</th><th>Slot</th><th>Date</th></tr></thead>
-        <tbody id="leadRows"><tr><td colspan="5">Loading…</td></tr></tbody>
-      </table></div>
-      <p class="hint">Students who filled the demo form appear here — call to convert them!</p>
-    </section>
-
     <section class="adm-pane" id="pane-notes">
       <div class="selrow">
         <select id="nSem"></select>
         <select id="nSub"></select>
+        <button class="btn btn-sm" id="syncSubs" type="button">Sync subject names</button>
       </div>
+      <div class="savemsg" id="syncMsg"></div>
       <div class="topicedit" id="nTopics"></div>
       <div id="editorBox" hidden>
         <h3 id="edTitle" style="margin-bottom:14px"></h3>
@@ -210,7 +203,6 @@
         b.classList.add("on");
         $("pane-" + b.dataset.pane).classList.add("on");
         if (b.dataset.pane === "users") loadUsers();
-        if (b.dataset.pane === "leads") loadLeads();
         if (b.dataset.pane === "notes") initNotes();
         if (b.dataset.pane === "settings") loadSettings();
       });
@@ -231,9 +223,6 @@
           errors.push("Sem " + s + ": " + (e.message || e));
         }
       }
-      let leads = [];
-      try { leads = await FB.listLeads(1000); }
-      catch (e) { errors.push("Leads: " + (e.message || e)); }
       let users = [];
       try { users = await FB.listUsers(1000); } catch (_) {}
       function esc(x) {
@@ -243,7 +232,6 @@
       }
       $("statGrid").innerHTML = `
         <div class="statcard"><b>${users.length}</b><span>Registered users</span></div>
-        <div class="statcard"><b>${leads.length}</b><span>Demo leads</span></div>
         <div class="statcard"><b>${total}</b><span>Total topics</span></div>
         <div class="statcard"><b>${filled}</b><span>Topics with notes</span></div>
         <div class="statcard"><b>${total - filled}</b><span>Empty topics</span></div>
@@ -260,7 +248,7 @@
         $("userCount").textContent = rows.length;
         // self-diagnose: if even the admin's own profile is missing = writes blocked = rules outdated
         const me = (window._adminUser && (window._adminUser.email || window._adminUser.phoneNumber)) || "";
-        const meSaved = me && rows.some((u) => (u.email || u.phone) === me);
+        const meSaved = me && rows.some((u) => (u.email || u.phone) === me));
         const warn = (!meSaved && me)
           ? `<tr><td colspan="5" style="background:#fef2f2;color:#b91c1c;font-weight:700">⚠️ Your own login was NOT saved either = profile writes are BLOCKED!<br>Fix: paste the LATEST <b>backend/firestore.rules</b> file into Firebase → Firestore → Rules and <b>Publish</b> it (the users rule is required). Then logout → login again.</td></tr>`
           : "";
@@ -278,18 +266,6 @@
       }
     }
 
-    async function loadLeads() {
-      try {
-        const rows = await FB.listLeads();
-        $("leadRows").innerHTML = rows.map((l) => `
-          <tr><td>${l.name || ""}</td><td><a href="tel:${l.phone}">${l.phone || ""}</a></td>
-          <td>Sem ${l.sem || ""}</td><td>${l.slot || ""}</td>
-          <td>${(l.at || "").slice(0, 10)}</td></tr>`).join("") || `<tr><td colspan="5">No leads yet</td></tr>`;
-      } catch (_) {
-        $("leadRows").innerHTML = `<tr><td colspan="5">Could not load</td></tr>`;
-      }
-    }
-
     // notes manager
     let curSem = 1, curSub = "", curTopic = null, notesInit = false;
     async function initNotes() {
@@ -300,6 +276,16 @@
       $("nSub").addEventListener("change", () => { curSub = $("nSub").value; loadTopics(); });
       await loadSubs();
     }
+    $("syncSubs").addEventListener("click", async () => {
+      if (!confirm("Subject names will sync from the site files. Topic notes are NEVER touched. Continue?")) return;
+      $("syncMsg").textContent = "Syncing…";
+      try {
+        await FB.syncSubjectsFromJson((m) => { $("syncMsg").textContent = m; });
+        loadSubs();
+      } catch (e) {
+        $("syncMsg").textContent = "Sync FAILED: " + (e.message || e);
+      }
+    });
     async function loadSubs() {
       const d = await FB.loadSem(curSem);
       window._subs = d.subjects;

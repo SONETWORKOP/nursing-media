@@ -212,9 +212,53 @@ window.FB = (() => {
     await db.collection("leads").add({ ...lead, at: new Date().toISOString() });
   }
 
-  /* ---------- one-time seed: data/*.json → Firestore ----------
-     SAFE: jo subject pehle se hai use CHOD deta hai (overwrite nahi).
-     Sirf missing data bharta hai — dobara dabana safe hai. */
+  /* ---------- sync subject NAMES from data/*.json (topics untouched) ----------
+     Renames/adds subjects, deletes stale ones. Topic content is NEVER touched. */
+  async function syncSubjectsFromJson(status) {
+    const say = status || (() => {});
+    const site = await (await fetch("data/site.json")).json();
+    let added = 0, renamed = 0, removed = 0;
+    for (const sem of site.semesters) {
+      say(`Semester ${sem} sync…`);
+      const d = await (await fetch(`data/sem${sem}.json`)).json();
+      const col = db.collection("sems").doc(String(sem)).collection("subjects");
+      const existing = await col.get();
+      const wantIds = new Set(d.subjects.map((s) => s.id));
+      for (const docSnap of existing.docs) {
+        if (!wantIds.has(docSnap.id)) { await col.doc(docSnap.id).delete(); removed++; }
+      }
+      let order = 0;
+      for (const s of d.subjects) {
+        const ref = col.doc(s.id);
+        const doc = await ref.get();
+        if (!doc.exists) {
+          await ref.set({
+            name: s.name, icon: s.icon || "", order: order++,
+            topics: s.topics.map((t) => ({
+              id: t.id, title: t.title, content: t.content || "",
+              pdf: t.pdf || "", video: t.video || ""
+            }))
+          });
+          added++;
+        } else {
+          const cur = doc.data() || {};
+          const patch = {};
+          if (cur.name !== s.name) patch.name = s.name;
+          if ((cur.icon || "") !== (s.icon || "")) patch.icon = s.icon || "";
+          if (cur.order !== order) patch.order = order;
+          if (Object.keys(patch).length) { await ref.update(patch); renamed++; }
+          order++;
+          if (!Array.isArray(cur.topics) || !cur.topics.length) {
+            await ref.update({ topics: s.topics.map((t) => ({
+              id: t.id, title: t.title, content: t.content || "",
+              pdf: t.pdf || "", video: t.video || ""
+            })) });
+          }
+        }
+      }
+    }
+    say(`Done ✓ — ${added} new, ${renamed} renamed, ${removed} removed (notes safe)`);
+  }
   async function seedFromJson(status) {
     const say = status || (() => {});
     const site = await (await fetch("data/site.json")).json();
@@ -255,6 +299,6 @@ window.FB = (() => {
     onUser, logout, userLabel, isAdmin, isAdminPhone,
     saveUserProfile, listUsers,
     saveTopic, saveSubject, saveSettings, getSettings,
-    listLeads, addLead, seedFromJson
+    listLeads, addLead, seedFromJson, syncSubjectsFromJson
   };
 })();

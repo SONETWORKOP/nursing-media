@@ -110,12 +110,14 @@ window.EduHome = (() => {
     let html = "";
     for (let sem = 1; sem <= 6; sem++) {
       try {
-        const res = await fetch(`data/sem${sem}.json`);
-        const d = await res.json();
+        const d = await loadJSON(`data/sem${sem}.json`);
         const links = d.subjects.map((s) =>
-          `<li><a href="subject.html?sem=${sem}&sub=${encodeURIComponent(s.id)}">${s.name}</a></li>`
+          `<li><a href="subject.html?sem=${sem}&sub=${encodeURIComponent(s.id)}">${escHtml(s.name)}</a></li>`
         ).join("");
-        html += `<div class="libcol"><h4>Semester ${sem}</h4><ul>${links}</ul>
+        const locked = Math.max(0, 5 - d.subjects.length);
+        let lockLis = "";
+        for (let k = 0; k < locked; k++) lockLis += `<li class="locked">🔒 Coming soon</li>`;
+        html += `<div class="libcol"><h4>Semester ${sem}</h4><ul>${links}${lockLis}</ul>
           <a class="liball" href="semester.html?sem=${sem}">Open Sem ${sem} →</a></div>`;
       } catch (_) { /* skip */ }
     }
@@ -152,8 +154,7 @@ window.EduHome = (() => {
 
   async function getSem(sem) {
     if (!semCache[sem]) {
-      const res = await fetch(`data/sem${sem}.json`);
-      semCache[sem] = await res.json();
+      semCache[sem] = await loadJSON(`data/sem${sem}.json`);
     }
     return semCache[sem];
   }
@@ -162,6 +163,20 @@ window.EduHome = (() => {
     return String(s ?? "").replace(/[&<>"']/g, (c) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
+  }
+
+  // locked slots: har semester me 5 dikhao, baaki par tala
+  function lockedCards(n) {
+    let h = "";
+    for (let k = 0; k < n; k++) {
+      h += `<div class="expsub locked-card">
+        <span class="lockicon">🔒</span>
+        <h3>Coming Soon</h3>
+        <p>New subject notes on the way</p>
+        <span class="tag">Locked</span>
+      </div>`;
+    }
+    return h;
   }
 
   async function showSem(sem) {
@@ -174,6 +189,11 @@ window.EduHome = (() => {
     if (full) full.href = `semester.html?sem=${sem}`;
     try {
       const d = await getSem(sem);
+      const locked = Math.max(0, 5 - d.subjects.length);
+      const pillSmall = document.querySelector("#expPills .exppill.on small");
+      if (pillSmall) pillSmall.textContent = locked
+        ? `${d.subjects.length} subjects · ${locked} locked`
+        : `${d.subjects.length} subjects`;
       body.innerHTML = d.subjects.map((s, i) => `
         <div class="expsub">
           <button class="expsub-head" data-sub="${escHtml(s.id)}">
@@ -186,7 +206,7 @@ window.EduHome = (() => {
           <div class="exptopics"><div class="expchips">
             ${s.topics.map((t) => `<a href="topic.html?sem=${sem}&sub=${encodeURIComponent(s.id)}&t=${t.id}"><span class="n">${t.id}</span>${escHtml(t.title)}</a>`).join("")}
           </div></div>
-        </div>`).join("");
+        </div>`).join("") + lockedCards(locked);
       body.querySelectorAll(".expsub-head").forEach((h) => {
         h.addEventListener("click", () => {
           const card = h.closest(".expsub");
@@ -207,7 +227,7 @@ window.EduHome = (() => {
       `<button class="exppill${s === 1 ? " on" : ""}" data-sem="${s}" style="--sbg:url('${SEM_BG[s]}')">
         <span class="pnum">${String(s).padStart(2, "0")}</span>
         <span class="plab">Semester ${s}</span>
-        <small>5 subjects · 100 topics</small>
+        <small>…</small>
       </button>`).join("");
     pills.querySelectorAll(".exppill").forEach((p) => {
       p.addEventListener("click", () => showSem(+p.dataset.sem));
