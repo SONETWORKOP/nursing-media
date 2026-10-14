@@ -138,6 +138,25 @@
         <button class="btn btn-sm" id="syncSubs" type="button">Sync subject names</button>
       </div>
       <div class="savemsg" id="syncMsg"></div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px">
+        <h3 id="subToolsTitle">Subject tools</h3>
+        <div class="form-group" style="margin-top:12px"><label>Subject name (rename selected)</label><input type="text" id="subName" /></div>
+        <div class="form-group"><label>Icon (emoji, optional)</label><input type="text" id="subIcon" placeholder="📘" /></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-fire btn-sm" id="subRename" type="button">Rename save ✓</button>
+          <button class="btn btn-sm" id="subDelete" type="button" style="border-color:#b91c1c;color:#b91c1c">Delete subject</button>
+        </div>
+        <div class="savemsg" id="subMsg"></div>
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--line)" />
+        <h3>Add new subject</h3>
+        <div class="form-group" style="margin-top:12px"><label>New subject name</label><input type="text" id="newSubName" placeholder="e.g. Pharmacology II" /></div>
+        <div class="form-group"><label>Icon (emoji, optional)</label><input type="text" id="newSubIcon" placeholder="💊" /></div>
+        <button class="btn btn-fire btn-sm" id="subAdd" type="button">Add subject ＋</button>
+        <div class="savemsg" id="newSubMsg"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <button class="btn btn-sm" id="topicAdd" type="button">＋ New topic</button>
+      </div>
       <div class="topicedit" id="nTopics"></div>
       <div id="editorBox" hidden>
         <h3 id="edTitle" style="margin-bottom:14px"></h3>
@@ -147,6 +166,7 @@
         <p class="hint">Open the PDF in the Drive app → Share → <b>“Anyone with the link”</b> → paste the link above → Save. Done!</p>
         <div class="form-group" style="margin-top:12px"><label>Video link (optional)</label><input type="text" id="edVideo" placeholder="https://…" /></div>
         <button class="btn btn-fire" id="edSave">Save ✓</button>
+        <button class="btn" id="edDelete" type="button" style="border-color:#b91c1c;color:#b91c1c;margin-left:10px" hidden>Delete topic</button>
         <div class="savemsg" id="edMsg"></div>
         <p class="hint">Preview: <a id="edPreview" href="#" target="_blank">open topic →</a></p>
       </div>
@@ -430,7 +450,7 @@
       notesInit = true;
       $("nSem").innerHTML = [1, 2, 3, 4, 5, 6, 7].map((s) => `<option value="${s}">Semester ${s}</option>`).join("");
       $("nSem").addEventListener("change", () => { curSem = +$("nSem").value; loadSubs(); });
-      $("nSub").addEventListener("change", () => { curSub = $("nSub").value; loadTopics(); });
+      $("nSub").addEventListener("change", () => { curSub = $("nSub").value; refreshSubTools(); loadTopics(); });
       await loadSubs();
     }
     $("syncSubs").addEventListener("click", async () => {
@@ -448,8 +468,86 @@
       window._subs = d.subjects;
       $("nSub").innerHTML = d.subjects.map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
       curSub = d.subjects[0]?.id || "";
+      refreshSubTools();
       loadTopics();
     }
+    function curSubObj() {
+      return (window._subs || []).find((s) => s.id === curSub) || null;
+    }
+    function refreshSubTools() {
+      const s = curSubObj();
+      $("subToolsTitle").textContent = s ? `Subject tools — ${s.name}` : "Subject tools";
+      $("subName").value = s ? s.name : "";
+      $("subIcon").value = s ? (s.icon || "") : "";
+      $("subMsg").textContent = "";
+    }
+    function slugify(name) {
+      const slug = String(name || "").toLowerCase().trim()
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+      return slug || ("subject-" + Date.now().toString(36));
+    }
+    $("subRename").addEventListener("click", async () => {
+      const msg = $("subMsg");
+      const name = $("subName").value.trim();
+      if (!curSub) { msg.textContent = "Pehle koi subject select karo."; return; }
+      if (!name) { msg.textContent = "Naam khaali nahi ho sakta."; return; }
+      msg.style.color = ""; msg.textContent = "Saving…";
+      try {
+        await FB.saveSubject(curSem, curSub, name, $("subIcon").value.trim());
+        const d = await FB.loadSem(curSem);
+        window._subs = d.subjects;
+        $("nSub").innerHTML = d.subjects.map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
+        $("nSub").value = curSub;
+        refreshSubTools(); await loadTopics(false);
+        msg.style.color = "#16a34a"; msg.textContent = "Renamed ✓ — live on site!";
+      } catch (e) { msg.style.color = "#b91c1c"; msg.textContent = "Fail: " + (e.message || e); }
+    });
+    $("subDelete").addEventListener("click", async () => {
+      const s = curSubObj();
+      if (!s) return;
+      const n = (s.topics || []).length;
+      if (!confirm(`"${s.name}" delete karein? Iske ${n} topics bhi delete ho jayenge. Pakka?`)) return;
+      const msg = $("subMsg");
+      msg.style.color = ""; msg.textContent = "Deleting…";
+      try {
+        await FB.deleteSubject(curSem, curSub);
+        const d = await FB.loadSem(curSem);
+        window._subs = d.subjects;
+        $("nSub").innerHTML = d.subjects.map((x) => `<option value="${x.id}">${x.name}</option>`).join("");
+        curSub = d.subjects[0]?.id || "";
+        $("nSub").value = curSub;
+        refreshSubTools(); await loadTopics();
+        msg.style.color = "#16a34a"; msg.textContent = "Deleted ✓";
+      } catch (e) { msg.style.color = "#b91c1c"; msg.textContent = "Fail: " + (e.message || e); }
+    });
+    $("subAdd").addEventListener("click", async () => {
+      const msg = $("newSubMsg");
+      const name = $("newSubName").value.trim();
+      if (!name) { msg.textContent = "Naam likho pehle."; return; }
+      let id = slugify(name);
+      const taken = new Set((window._subs || []).map((s) => s.id));
+      if (taken.has(id)) id = id + "-" + Date.now().toString(36);
+      msg.style.color = ""; msg.textContent = "Adding…";
+      try {
+        await FB.saveSubject(curSem, id, name, $("newSubIcon").value.trim());
+        const d = await FB.loadSem(curSem);
+        window._subs = d.subjects;
+        $("nSub").innerHTML = d.subjects.map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
+        curSub = id; $("nSub").value = id;
+        $("newSubName").value = ""; $("newSubIcon").value = "";
+        refreshSubTools(); await loadTopics();
+        msg.style.color = "#16a34a"; msg.textContent = "Added ✓ — ab isme topics bharo!";
+      } catch (e) { msg.style.color = "#b91c1c"; msg.textContent = "Fail: " + (e.message || e); }
+    });
+    $("topicAdd").addEventListener("click", () => {
+      const sub = curSubObj();
+      if (!sub) return;
+      const ids = (sub.topics || []).map((t) => t.id);
+      const nid = ids.length ? Math.max(...ids) + 1 : 1;
+      openEditor({ id: nid, title: "", content: "", pdf: "", video: "" });
+      $("edTitle").textContent = `Sem ${curSem} · New topic #${nid}`;
+      $("edDelete").hidden = true;
+    });
     async function loadTopics(hideEditor = true) {
       if (hideEditor) $("editorBox").hidden = true;
       const sub = (window._subs || []).find((s) => s.id === curSub);
@@ -457,7 +555,7 @@
       $("nTopics").innerHTML = topics.map((t) => `
         <a href="#" data-t="${t.id}" class="${(t.content || "").trim() ? "done" : ""}">
           <span class="dot"></span><span class="t">${t.id}. ${t.title}</span>
-          <small>${(t.content || "").trim() ? "notes ✓" : "khali"}</small>
+          <small>${(t.content || "").trim() ? "notes ✓" : "empty"}</small>
         </a>`).join("");
       document.querySelectorAll("#nTopics a").forEach((a) => a.addEventListener("click", (e) => {
         e.preventDefault();
@@ -466,6 +564,7 @@
     }
     function openEditor(t) {
       curTopic = t;
+      const isNew = !(window._subs || []).some((s) => (s.topics || []).some((x) => x.id === t.id));
       $("editorBox").hidden = false;
       $("edTitle").textContent = `Sem ${curSem} · Topic ${t.id}`;
       $("edName").value = t.title;
@@ -473,9 +572,23 @@
       $("edPdf").value = t.pdf || "";
       $("edVideo").value = t.video || "";
       $("edMsg").textContent = "";
+      $("edDelete").hidden = isNew;
       $("edPreview").href = `topic.html?sem=${curSem}&sub=${encodeURIComponent(curSub)}&t=${t.id}`;
       $("editorBox").scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    $("edDelete").addEventListener("click", async () => {
+      if (!curTopic) return;
+      if (!confirm(`Topic "${curTopic.title || ("#" + curTopic.id)}" delete karein? Pakka?`)) return;
+      const msg = $("edMsg");
+      msg.style.color = ""; msg.textContent = "Deleting…";
+      try {
+        await FB.deleteTopic(curSem, curSub, curTopic.id);
+        const d = await FB.loadSem(curSem);
+        window._subs = d.subjects;
+        await loadTopics();
+        msg.style.color = "#16a34a"; msg.textContent = "Deleted ✓";
+      } catch (e) { msg.style.color = "#b91c1c"; msg.textContent = "Fail: " + (e.message || e); }
+    });
     $("edSave").addEventListener("click", async () => {
       const btn = $("edSave");
       const msg = $("edMsg");

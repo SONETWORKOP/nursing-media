@@ -210,6 +210,17 @@ window.FB = (() => {
     else await ref.set({ name, icon, order: Date.now(), topics: [] });
   }
 
+  async function deleteSubject(sem, subId) {
+    await db.collection("sems").doc(String(sem)).collection("subjects").doc(subId).delete();
+  }
+
+  async function deleteTopic(sem, sub, topicId) {
+    const ref = db.collection("sems").doc(String(sem)).collection("subjects").doc(sub);
+    const doc = await ref.get();
+    const topics = ((doc.data() || {}).topics || []).filter((t) => t.id !== topicId);
+    await ref.update({ topics });
+  }
+
   async function saveSettings(s) { await db.collection("site").doc("config").set(s, { merge: true }); }
   async function getSettings() {
     const doc = await db.collection("site").doc("config").get();
@@ -457,7 +468,7 @@ window.FB = (() => {
     sendVerification, refreshUser,
     onUser, logout, userLabel, isAdmin, isAdminPhone,
     saveUserProfile, listUsers,
-    saveTopic, saveSubject, saveSettings, getSettings,
+    saveTopic, saveSubject, deleteTopic, deleteSubject, saveSettings, getSettings,
     listLeads, addLead, seedFromJson, syncSubjectsFromJson,
     paidId, paidLogin, paidSession, paidLogout, paidRefresh,
     listPaidCodes, createPaidCode, setPaidCodeActive, resetPaidCodePassword, deletePaidCode,

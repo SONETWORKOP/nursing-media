@@ -181,7 +181,7 @@
             <span class="n">${String(t.id).padStart(2, "0")}</span>
             <span>${esc(t.title)}</span>
             <span class="st">Read →</span>
-          </a>`).join("");
+          </a>`).join("") || `<div class="paper"><div class="empty">No topics yet in this subject — new notes coming soon. 🔒</div></div>`;
       } catch (e) {
         document.getElementById("topicList").innerHTML =
           `<div class="paper"><div class="empty">Data not found.</div></div>`;

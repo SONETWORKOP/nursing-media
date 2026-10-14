@@ -3,41 +3,50 @@
 // Firebase Console → Firestore Database → Rules tab:
 //   1. andar ka SAB kuch select-all karke DELETE karo
 //   2. ye pura file paste karo → Publish
+// NOTE: likhna (write) SIRF owner kar sakta hai — koi bhi login
+// user ab notes overwrite/delete NAHI kar sakta.
 // ============================================================
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function isOwner() {
+      return request.auth != null && (
+        request.auth.token.email == "ojhashivam81@gmail.com" ||
+        request.auth.token.phone_number == "+919928096797"
+      );
+    }
+
     match /site/config {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isOwner();
     }
 
     match /sems/{sem}/subjects/{sub} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isOwner();
     }
 
     match /leads/{leadId} {
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read, update, delete: if isOwner();
     }
 
     match /users/{uid} {
       allow create, update: if request.auth != null && request.auth.uid == uid;
-      allow read: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
+      allow read: if isOwner();
     }
 
     match /paid_codes/{codeId} {
       allow get: if true;
-      allow list: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
-      allow create, update, delete: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
+      allow list: if isOwner();
+      allow create, update, delete: if isOwner();
     }
 
     match /paid_notes/{noteId} {
       allow read: if true;
-      allow create, update, delete: if request.auth != null && (request.auth.token.email == "ojhashivam81@gmail.com" || request.auth.token.phone_number == "+919928096797");
+      allow create, update, delete: if isOwner();
     }
 
   }
